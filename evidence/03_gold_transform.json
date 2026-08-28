@@ -1,0 +1,20 @@
+{
+  "run_name": "03_gold_transform",
+  "run_id": 362779509783937,
+  "result_state": "SUCCESS",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/12161912548549/run/362779509783937",
+  "result": {
+    "gold_dock_utilization_hourly_rows": 13801,
+    "gold_terminal_hourly_rows": 2126,
+    "gold_dock_current_state_rows": 36,
+    "docks_occupied_now": 1,
+    "total_detention_fee_usd": 235798.68,
+    "total_overtime_cost_usd": "108780.00",
+    "peak_hour_avg_util_pct": {
+      "hour_of_day": 11,
+      "avg_util_pct": "61.1",
+      "avg_labor_gap": 3.11
+    }
+  },
+  "error": null
+}

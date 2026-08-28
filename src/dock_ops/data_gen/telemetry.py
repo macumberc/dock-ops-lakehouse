@@ -74,8 +74,10 @@ def generate_events(
         day_factor = 0.45 if weekday >= 5 else 1.0
 
         for term in terminals:
-            # Daily trailer volume scales with door count; ~4.5 visits/door/day.
-            base = term.doors * 4.5 * day_factor
+            # Daily trailer volume scales with door count. Tuned so the diurnal
+            # waves push peak-hour door utilization high (docks slammed) while
+            # nights stay quiet — the core imbalance this build addresses.
+            base = term.doors * 10.0 * day_factor
             n_visits = max(1, int(rng.poisson(base)))
 
             for _ in range(n_visits):
@@ -103,7 +105,7 @@ def generate_events(
 
                 # Time on the door: assignment -> load start (spotting) -> load -> depart.
                 spot_min = float(rng.uniform(4, 12))
-                load_min = float(np.clip(rng.normal(38 + freight_lbs / 1200.0, 12), 12, 120))
+                load_min = float(np.clip(rng.normal(58 + freight_lbs / 1000.0, 14), 20, 150))
                 depart_min = float(rng.uniform(3, 10))
 
                 dock_assigned = gate_in + timedelta(minutes=wait_min)

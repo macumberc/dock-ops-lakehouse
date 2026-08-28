@@ -1,0 +1,25 @@
+{
+  "run_name": "01_generate_data",
+  "run_id": 813742476756963,
+  "result_state": "SUCCESS",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/263783730087772/run/813742476756963",
+  "result": {
+    "telemetry_events": 45745,
+    "telemetry_days": 31,
+    "telemetry_files": 31,
+    "images_total": 576,
+    "images_by_label": {
+      "empty": 214,
+      "docked": 126,
+      "loading": 169,
+      "obstructed": 67
+    },
+    "image_size": [
+      192,
+      144
+    ],
+    "telemetry_dir": "/Volumes/fedex_fevm_catalog/dock_ops_chad_macumber/raw/telemetry",
+    "images_dir": "/Volumes/fedex_fevm_catalog/dock_ops_chad_macumber/raw/dock_images"
+  },
+  "error": null
+}

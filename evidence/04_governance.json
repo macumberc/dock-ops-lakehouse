@@ -1,0 +1,51 @@
+{
+  "run_name": "04_governance",
+  "run_id": 422867356247406,
+  "result_state": "SUCCESS",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/194894833544143/run/422867356247406",
+  "result": {
+    "tags_applied": [
+      "ALTER SCHEMA fedex_fevm_catalog.dock_ops_chad_macumber",
+      "ALTER SCHEMA fedex_fevm_catalog.dock_ops_chad_macumber",
+      "ALTER SCHEMA fedex_fevm_catalog.dock_ops_chad_macumber",
+      "ALTER TABLE fedex_fevm_catalog.dock_ops_chad_macumber.gold_visit_fact",
+      "ALTER TABLE fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
+      "ALTER TABLE fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state",
+      "ALTER TABLE fedex_fevm_catalog.dock_ops_chad_macumber.gold_visit_fact ALTER COLUMN worker_"
+    ],
+    "tags_failed": [],
+    "worker_id_values_seen": [
+      "W-REDACTED"
+    ],
+    "grants_applied": 3,
+    "grants_failed": [],
+    "grants_on_current_state": [
+      "account users:SELECT",
+      "chad.macumber@databricks.com:ALL PRIVILEGES",
+      "chad.macumber@databricks.com:MANAGE"
+    ],
+    "lineage_edges": [
+      "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_utilization_hourly",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_utilization_hourly -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.bronze_dock_images -> fedex_fevm_catalog.dock_ops_chad_macumber.silver_dock_images",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.bronze_telemetry -> fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits"
+    ],
+    "tables_in_schema": [
+      "bronze_dock_images",
+      "bronze_telemetry",
+      "gold_dock_current_state",
+      "gold_dock_utilization_hourly",
+      "gold_terminal_hourly",
+      "gold_visit_fact",
+      "silver_dock_images",
+      "silver_visits"
+    ],
+    "functions_in_schema": [
+      "fedex_fevm_catalog.dock_ops_chad_macumber.mask_worker_id"
+    ]
+  },
+  "error": null
+}
