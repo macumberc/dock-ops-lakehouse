@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dock-ops-lakehouse"
+version = "0.1.0"
+description = "Meridian Freight Systems — end-to-end loading-dock utilization, staffing & monitoring lakehouse on Databricks (FE Bar build)."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Chad Macumber" }]
+license = { text = "MIT" }
+
+# Kept intentionally lean per house conventions: stdlib + PySpark + NumPy.
+# Pillow is used for procedural synthetic dock-camera image rendering.
+# scikit-learn is used for the CPU image classifier and the forecasting model.
+dependencies = [
+    "numpy>=1.24",
+    "pillow>=10.0",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+# Only needed for local orchestration / evidence capture, not on-cluster.
+dev = ["databricks-sdk>=0.81.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"dock_ops" = ["**/*.sql", "**/*.json"]

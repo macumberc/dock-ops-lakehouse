@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Node / frontend
+node_modules/
+app/frontend/dist/
+app/frontend/build/
+
+# Local scratch
+.DS_Store
+*.log
+scratch/
+
+# Secrets — never commit
+.env
+*.pem
+.databrickscfg
+
+# NOTE: evidence/ IS committed on purpose (it is the required text execution evidence).
+# NOTE: sample synthetic images under data_samples/ ARE committed (small, illustrative).
