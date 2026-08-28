@@ -1,0 +1,24 @@
+{
+  "app_url": "https://dock-ops-app-7474658947307895.aws.databricksapps.com",
+  "deploy_state": "SUCCEEDED / RUNNING",
+  "health": {
+    "status": "ok",
+    "warehouse": "2a0649a9f0fb7773",
+    "cv_endpoint": "dock-occupancy-cls"
+  },
+  "kpis_totals": {
+    "detention_usd": "235799.0",
+    "overtime_usd": "108780",
+    "avg_util_pct": "40.2",
+    "peak_util_pct": "94.8"
+  },
+  "docks": {
+    "source": "lakebase",
+    "count": 36
+  },
+  "staffing": {
+    "source": "lakebase",
+    "count": 12
+  },
+  "briefing_excerpt": "**Shift Briefing \u2013 Dock Ops**\n\n**Situation:** Network detention ($235.8K) and OT ($108.8K) remain elevated, driven by MEM's severe 10\u201311am understaffing (gaps of 8\u20139 heads) despite low avg utilization (~40%) network-wide \u2014 a scheduling mismatch, not a demand problem.\n\n**Top 3 Staffing Actions:**\n\n1. **MEM, 10\u201311am, +9 headcount** \u2014 Close the largest gap (17 forecast vs 8 scheduled). Highest ROI: cuts ~$714/hr OT exposure and directly targets MEM's $91.6K detention, the worst of any terminal.\n\n2. **ATL, 11am, +8 headcount** \u2014 Peak util hits 87.6% with only 7 scheduled vs 15 needed. Adding staff prevents OT spillover (~$336/hr) and trims ATL's $75.3K detention.\n\n3. **DFW, monitor peak hour nea"
+}

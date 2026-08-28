@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meridian Dock Operations Console</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2330;--line:#2b3444;--txt:#e6edf3;--mut:#8b98a9;
+        --accent:#ff5a1f;--ok:#2ea043;--warn:#d29922;--bad:#f85149;--blue:#388bfd;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;}
+  header{padding:18px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;
+         background:linear-gradient(90deg,#161b22,#0d1117);}
+  header .logo{width:34px;height:34px;border-radius:7px;background:var(--accent);display:flex;align-items:center;
+        justify-content:center;font-weight:800;color:#fff;font-size:18px;}
+  header h1{font-size:18px;margin:0;font-weight:650} header .sub{color:var(--mut);font-size:12.5px}
+  .wrap{padding:20px 26px;max-width:1280px;margin:0 auto}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px 18px}
+  .kpi .label{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:27px;font-weight:750;margin-top:6px}
+  .kpi .val.bad{color:var(--bad)} .kpi .val.warn{color:var(--warn)} .kpi .val.blue{color:var(--blue)}
+  .grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:16px}
+  h2{font-size:14.5px;margin:0 0 14px;font-weight:650;color:#cdd7e2}
+  .docks{display:flex;flex-direction:column;gap:14px}
+  .term{}
+  .term .tname{font-size:12px;color:var(--mut);margin-bottom:6px;font-weight:600}
+  .bays{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:7px}
+  .bay{border-radius:7px;padding:8px 4px;text-align:center;font-size:11px;border:1px solid var(--line);
+       background:var(--panel2)}
+  .bay .id{font-weight:700;font-size:11.5px}
+  .bay .st{font-size:9.5px;margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+  .bay.occupied{border-color:var(--bad);box-shadow:inset 0 0 0 1px rgba(248,81,73,.4)}
+  .bay.loading{border-color:var(--warn)} .bay.docked{border-color:var(--blue)}
+  .bay.available{opacity:.72}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.4px}
+  .gap{font-weight:750;color:var(--bad)}
+  .chart{display:flex;align-items:flex-end;gap:3px;height:150px;margin-top:8px}
+  .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px}
+  .bar{width:100%;background:var(--blue);border-radius:3px 3px 0 0;min-height:2px}
+  .bar.hot{background:var(--accent)}
+  .col .hr{font-size:8.5px;color:var(--mut);margin-top:3px}
+  .brief{white-space:pre-wrap;font-size:13px;line-height:1.55;color:#dbe4ee}
+  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 15px;font-weight:600;
+         cursor:pointer;font-size:13px}
+  button:disabled{opacity:.5;cursor:wait}
+  .src{font-size:10.5px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-left:8px}
+  .muted{color:var(--mut);font-size:12px}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--mut);margin-bottom:10px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect} = React;
+const f = (n)=> n==null? '–' : Number(n).toLocaleString();
+const usd = (n)=> n==null? '–' : '$'+Number(n).toLocaleString();
+
+function KPIs({d}){
+  if(!d) return <div className="muted">Loading KPIs…</div>;
+  const t=d.totals||{};
+  return <div className="kpis">
+    <div className="card kpi"><div className="label">Detention Fees · 31d</div><div className="val bad">{usd(t.detention_usd)}</div></div>
+    <div className="card kpi"><div className="label">Avoidable Overtime · 31d</div><div className="val warn">{usd(t.overtime_usd)}</div></div>
+    <div className="card kpi"><div className="label">Avg Dock Utilization</div><div className="val blue">{t.avg_util_pct}%</div></div>
+    <div className="card kpi"><div className="label">Peak Dock Utilization</div><div className="val">{t.peak_util_pct}%</div></div>
+  </div>;
+}
+
+function DockBoard({data}){
+  if(!data) return <div className="muted">Loading dock board…</div>;
+  const docks=data.docks||[];
+  const terms={};
+  docks.forEach(x=>{(terms[x.terminal]=terms[x.terminal]||[]).push(x)});
+  const cls=(d)=> d.telemetry_status==='occupied' ? 'occupied' : 'available';
+  return <div className="card">
+    <h2>Live Dock Board <span className="src">source: {data.source}</span></h2>
+    <div className="legend">
+      <span><span className="dot" style={{background:'var(--bad)'}}></span>occupied</span>
+      <span><span className="dot" style={{background:'var(--warn)'}}></span>cv: loading</span>
+      <span><span className="dot" style={{background:'var(--blue)'}}></span>cv: docked</span>
+      <span><span className="dot" style={{background:'#39424f'}}></span>available</span>
+    </div>
+    <div className="docks">
+      {Object.keys(terms).sort().map(t=>
+        <div className="term" key={t}>
+          <div className="tname">{t} — {terms[t].length} doors</div>
+          <div className="bays">
+            {terms[t].map(d=>
+              <div key={d.dock_id} className={"bay "+cls(d)+" "+(d.cv_state||'')}>
+                <div className="id">{d.dock_id.split('-')[1]}</div>
+                <div className="st">{d.telemetry_status==='occupied'?'OCCUPIED':(d.cv_state||'avail')}</div>
+              </div>)}
+          </div>
+        </div>)}
+    </div>
+  </div>;
+}
+
+function Staffing({data}){
+  if(!data) return <div className="muted">Loading staffing…</div>;
+  const rows=data.rows||[];
+  return <div className="card">
+    <h2>Next-Shift Understaffing (forecast) <span className="src">source: {data.source}</span></h2>
+    <table><thead><tr><th>Terminal</th><th>Hour</th><th>Need</th><th>Sched</th><th>Gap</th><th>OT risk</th></tr></thead>
+    <tbody>{rows.map((r,i)=>
+      <tr key={i}><td>{r.terminal}</td><td>{String(r.hour_of_day).padStart(2,'0')}:00</td>
+      <td>{r.forecast_headcount}</td><td>{r.scheduled_headcount}</td>
+      <td className="gap">+{r.labor_gap}</td><td>{usd(r.projected_overtime_cost_usd)}</td></tr>)}</tbody></table>
+  </div>;
+}
+
+function UtilChart({data}){
+  if(!data) return <div className="muted">Loading…</div>;
+  const max=Math.max(...data.map(d=>Number(d.avg_util_pct)||0),1);
+  return <div className="card">
+    <h2>Utilization by Hour of Day (orange = mid-day crunch)</h2>
+    <div className="chart">
+      {data.map((d,i)=>{const h=Number(d.avg_util_pct)||0; const hot=Number(d.labor_gap)>0;
+        return <div className="col" key={i} title={`${d.hour_of_day}:00 · util ${d.avg_util_pct}% · gap ${d.labor_gap}`}>
+          <div className={"bar"+(hot?" hot":"")} style={{height:(h/max*130)+'px'}}></div>
+          <div className="hr">{d.hour_of_day}</div></div>;})}
+    </div>
+  </div>;
+}
+
+function Briefing(){
+  const [txt,setTxt]=useState(null); const [busy,setBusy]=useState(false);
+  const gen=async()=>{setBusy(true);
+    try{const r=await fetch('/api/briefing',{method:'POST'}); const j=await r.json(); setTxt(j.briefing);}
+    catch(e){setTxt('Error generating briefing: '+e);} setBusy(false);};
+  return <div className="card">
+    <h2>AI Shift Briefing <span className="src">Claude Sonnet 5 · grounded</span></h2>
+    {!txt && <p className="muted">Generate a grounded briefing with prioritized staffing actions.</p>}
+    {txt && <div className="brief">{txt}</div>}
+    <div style={{marginTop:12}}><button onClick={gen} disabled={busy}>{busy?'Generating…':'Generate briefing'}</button></div>
+  </div>;
+}
+
+function App(){
+  const [kpi,setKpi]=useState(null),[docks,setDocks]=useState(null),
+        [staff,setStaff]=useState(null),[util,setUtil]=useState(null);
+  useEffect(()=>{
+    fetch('/api/kpis').then(r=>r.json()).then(setKpi);
+    fetch('/api/docks').then(r=>r.json()).then(setDocks);
+    fetch('/api/staffing').then(r=>r.json()).then(setStaff);
+    fetch('/api/utilization').then(r=>r.json()).then(setUtil);
+  },[]);
+  return <div>
+    <header>
+      <div className="logo">M</div>
+      <div><h1>Meridian Freight — Dock Operations Console</h1>
+      <div className="sub">Loading-dock utilization, staffing & monitoring · Lakehouse-powered</div></div>
+    </header>
+    <div className="wrap">
+      <KPIs d={kpi}/>
+      <div className="grid2"><DockBoard data={docks}/><Staffing data={staff}/></div>
+      <div className="grid2"><UtilChart data={util}/><Briefing/></div>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

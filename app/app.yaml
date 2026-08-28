@@ -1,0 +1,12 @@
+command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: "2a0649a9f0fb7773"
+  - name: SERVING_ENDPOINT
+    value: "dock-occupancy-cls"
+  - name: PGHOST
+    value: "ep-square-resonance-d8lt69ul.database.us-east-2.cloud.databricks.com"
+  - name: LAKEBASE_ENDPOINT
+    value: "projects/dock-ops/branches/production/endpoints/primary"
+  - name: PGDATABASE
+    value: "databricks_postgres"

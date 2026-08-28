@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Meridian Freight — Dock Operations Intelligence</title>
+<style>
+  :root{--bg:#0b0f17;--panel:#141b26;--line:#26313f;--txt:#eaf0f6;--mut:#93a1b2;
+        --accent:#ff5a1f;--ok:#2ea043;--warn:#e3b341;--bad:#f85149;--blue:#4c8dff;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5}
+  .slide{max-width:1000px;margin:0 auto;padding:54px 46px;border-bottom:1px solid var(--line);min-height:88vh;
+         display:flex;flex-direction:column;justify-content:center}
+  .kicker{color:var(--accent);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-size:12.5px;margin-bottom:14px}
+  h1{font-size:44px;font-weight:800;line-height:1.12;margin-bottom:16px;letter-spacing:-.5px}
+  h2{font-size:30px;font-weight:750;margin-bottom:20px;letter-spacing:-.3px}
+  h3{font-size:17px;font-weight:700;margin-bottom:8px}
+  p{color:var(--mut);font-size:16.5px;max-width:760px;margin-bottom:12px}
+  .lead{font-size:20px;color:#cdd8e4}
+  .row{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;flex:1;min-width:210px}
+  .stat{font-size:38px;font-weight:800}
+  .stat.bad{color:var(--bad)} .stat.warn{color:var(--warn)} .stat.ok{color:var(--ok)} .stat.blue{color:var(--blue)}
+  .stat.acc{color:var(--accent)}
+  .cap{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+  ul{margin:10px 0 0 20px;color:var(--mut);font-size:16px} li{margin-bottom:9px}
+  li b{color:var(--txt)}
+  .pipe{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .step{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+        border-radius:8px;padding:12px 14px;flex:1;min-width:150px}
+  .step .n{color:var(--accent);font-weight:800;font-size:12px} .step .t{font-weight:700;margin:4px 0 2px}
+  .step .d{color:var(--mut);font-size:12.5px}
+  .tag{display:inline-block;background:rgba(255,90,31,.12);color:var(--accent);border:1px solid rgba(255,90,31,.3);
+       border-radius:20px;padding:3px 12px;font-size:12.5px;font-weight:600;margin-right:6px}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:15px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  .foot{color:var(--mut);font-size:13px;margin-top:22px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="kicker">Meridian Freight Systems · Board / VP Operations Briefing</div>
+  <h1>Turning the loading dock from a blind spot into a managed asset</h1>
+  <p class="lead">A lakehouse that sees every dock in real time, forecasts labor demand, and
+  tells supervisors where to move people — before trailers start racking up detention.</p>
+  <div class="row">
+    <div class="card"><div class="stat bad">$4.1M</div><div class="cap">Annualized detention + avoidable overtime</div></div>
+    <div class="card"><div class="stat warn">88–95%</div><div class="cap">Peak dock utilization (invisible today)</div></div>
+    <div class="card"><div class="stat blue">3</div><div class="cap">Cross-dock terminals · 36 doors</div></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">The Problem</div>
+  <h2>Docks are the bottleneck — and no one can see them</h2>
+  <p>At Meridian's cross-dock terminals, trailers arrive in unpredictable waves. Doors sit
+  idle at 6am, then get slammed by noon. Supervisors staff by gut feel from a fixed shift
+  plan that never changes.</p>
+  <div class="two">
+    <div>
+      <h3>What it costs (measured over 31 days, 3 terminals)</h3>
+      <ul>
+        <li><b>$235,799</b> in trailer <b>detention fees</b> — carriers billing us for waiting past the free window</li>
+        <li><b>$108,780</b> in <b>avoidable overtime</b> — reactive PM catch-up crews</li>
+        <li>Waits up to <b>13.5 hours</b> for a door during the mid-day crunch</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Why it persists</h3>
+      <ul>
+        <li>No real-time visibility into which doors are occupied</li>
+        <li>No forecast of when the wave hits — staffing is a flat guess</li>
+        <li>Camera feeds exist but no one watches 36 of them at once</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Root Cause, In the Data</div>
+  <h2>A fixed shift plan that misses the mid-day loading crunch</h2>
+  <p>Recommended vs. scheduled dock headcount by hour — the plan is short-handed exactly
+  when the docks are busiest (10:00–12:00), and over-staffed overnight.</p>
+  <table>
+    <tr><th>Hour</th><th>Avg utilization</th><th>Scheduled</th><th>Actually needed</th><th>Gap</th></tr>
+    <tr><td>02:00</td><td>13%</td><td>3.4</td><td>1.9</td><td style="color:var(--ok)">over-staffed −1.5</td></tr>
+    <tr><td>08:00</td><td>48%</td><td>7.0</td><td>7.1</td><td>balanced</td></tr>
+    <tr><td>11:00</td><td>61%</td><td>7.0</td><td>10.1</td><td style="color:var(--bad)">SHORT +3.1</td></tr>
+    <tr><td>20:00</td><td>54%</td><td>7.0</td><td>8.2</td><td style="color:var(--bad)">SHORT +1.2</td></tr>
+  </table>
+  <p class="foot">Memphis is the worst terminal: $91,642 detention, peak forecast need of 17 dock workers against 8 scheduled.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">The Solution</div>
+  <h2>An end-to-end dock intelligence platform on Databricks</h2>
+  <p>One governed data journey — from raw camera frames and gate scans to a supervisor's
+  console — built entirely on the Databricks Lakehouse.</p>
+  <div class="pipe">
+    <div class="step"><div class="n">01 · LAKEFLOW</div><div class="t">Ingest</div><div class="d">Auto Loader streams gate/dock telemetry + camera images into bronze→silver</div></div>
+    <div class="step"><div class="n">02 · UNITY CATALOG</div><div class="t">Govern</div><div class="d">Lineage, tags, column masks on worker IDs, role-based access</div></div>
+    <div class="step"><div class="n">03 · ML / CV</div><div class="t">See</div><div class="d">Vision model classifies each dock frame; forecast predicts labor demand</div></div>
+    <div class="step"><div class="n">04 · GENAI</div><div class="t">Advise</div><div class="d">Grounded shift briefings with prioritized staffing moves</div></div>
+    <div class="step"><div class="n">05 · LAKEBASE</div><div class="t">Serve</div><div class="d">Live dock state in Postgres for low-latency reads</div></div>
+    <div class="step"><div class="n">06 · GENIE + APP</div><div class="t">Act</div><div class="d">Natural-language Q&A + a supervisor operations console</div></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">What the Supervisor Sees</div>
+  <h2>From 36 blind doors to one live console</h2>
+  <div class="two">
+    <div>
+      <h3>Live dock board</h3>
+      <p>Every door, every terminal, color-coded by real-time occupancy and confirmed by
+      computer vision on the camera frame — served from Lakebase at operational speed.</p>
+      <h3>Next-shift staffing plan</h3>
+      <p>The forecast flags the exact terminal-hours that will be short-handed next week —
+      <b>241 weekday hours</b>, <b>$27,426</b> of projected overtime — so labor moves
+      <i>before</i> the crunch, not after.</p>
+    </div>
+    <div>
+      <h3>Ask in plain English (Genie)</h3>
+      <p>"Which terminal has the highest detention fees?" → Memphis, $91,642. "When are we
+      understaffed next week?" → MEM 10–11am, 9 short. No SQL required.</p>
+      <h3>AI shift briefing</h3>
+      <p>One click produces a grounded briefing: the top 3 staffing moves with terminal,
+      hour, headcount, and projected dollar impact.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">The Value</div>
+  <h2>Recover a meaningful share of $4.1M — and stop flying blind</h2>
+  <div class="row">
+    <div class="card"><div class="stat acc">30–40%</div><div class="cap">Detention reduction by closing the mid-day gap (industry-typical for proactive dock staffing)</div></div>
+    <div class="card"><div class="stat ok">$1.2–1.6M</div><div class="cap">Annual run-rate opportunity, detention + overtime</div></div>
+    <div class="card"><div class="stat blue">Minutes</div><div class="cap">From "no visibility" to a live, queryable board</div></div>
+  </div>
+  <div class="two" style="margin-top:26px">
+    <div>
+      <h3>For the executive sponsor (VP, Terminal Operations)</h3>
+      <ul><li>A hard-dollar cost line (detention + OT) with a measurable reduction target</li>
+      <li>Network-wide visibility and a repeatable, governed platform — not a point tool</li></ul>
+    </div>
+    <div>
+      <h3>For the domain owner (Terminal Manager)</h3>
+      <ul><li>A daily staffing plan that matches the wave, not the clock</li>
+      <li>One screen for all 36 doors + plain-English answers, no analyst in the loop</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Proof & Roadmap</div>
+  <h2>Built and running today on Databricks</h2>
+  <p><span class="tag">Lakeflow</span><span class="tag">Unity Catalog</span><span class="tag">Lakebase</span>
+     <span class="tag">CV + Forecast</span><span class="tag">Genie</span><span class="tag">Databricks App</span></p>
+  <p>This is a working prototype: 45,745 telemetry events and 576 dock-camera images ingested
+  and governed; a CV model at 100% test accuracy served live; a staffing forecast; a Genie
+  room; and a deployed operations app — all on synthetic data.</p>
+  <div class="two" style="margin-top:8px">
+    <div><h3>30 days</h3><ul><li>Connect real yard-management + camera feeds for 1 pilot terminal</li><li>Baseline detention & OT; validate the forecast against actuals</li></ul></div>
+    <div><h3>60–90 days</h3><ul><li>Roll the console to all terminals; wire staffing recs into the labor system</li><li>Track recovered detention $ as the success metric</li></ul></div>
+  </div>
+  <p class="foot">Meridian Freight Systems is a fictional company; all data is synthetic. Build: github.com/macumberc/dock-ops-lakehouse</p>
+</section>
+
+</body>
+</html>
