@@ -1,0 +1,103 @@
+{
+  "space_id": "01f1a3243b00149fa4876211f8b5c004",
+  "results": [
+    {
+      "question": "Which terminal has the highest total detention fees?",
+      "status": "COMPLETED",
+      "sql": "WITH terminal_fees AS (\n  SELECT\n    `terminal`,\n    ROUND(SUM(`detention_fee_usd`), 0) AS `detention_usd`\n  FROM `fedex_fevm_catalog`.`dock_ops_chad_macumber`.`gold_terminal_hourly`\n  WHERE `terminal` IS NOT NULL\n  GROUP BY `terminal`\n), ranked AS (\n  SELECT\n    `terminal`,\n    `detention_usd`,\n    RANK() OVER (ORDER BY `detention_usd` DESC) AS `rnk`\n  FROM terminal_fees\n)\nSELECT `terminal`, `detention_usd`\nFROM ranked\nWHERE `rnk` = 1",
+      "text": "**MEM** has the highest total detention fees at **$91,642**. Based on the result shown, Memphis is the top terminal for detention charges.",
+      "rows": [
+        [
+          "MEM",
+          "91642.0"
+        ]
+      ],
+      "columns": [
+        "terminal",
+        "detention_usd"
+      ],
+      "query_description": "You're asking to find which terminal has the highest total detention fees, showing the terminal name and the rounded total detention fees in USD."
+    },
+    {
+      "question": "What hours of the day are we most understaffed next week?",
+      "status": "COMPLETED",
+      "sql": "SELECT `terminal`, `hour_of_day`, MAX(`labor_gap`) AS `max_gap`\nFROM `fedex_fevm_catalog`.`dock_ops_chad_macumber`.`gold_staffing_forecast`\nWHERE `labor_gap` > 0\n  AND `day_of_week` NOT IN (1, 7)\n  AND `hour_of_day` IS NOT NULL\n  AND `terminal` IS NOT NULL\nGROUP BY `terminal`, `hour_of_day`\nORDER BY `max_gap` DESC\nLIMIT 10",
+      "text": "Next week on weekdays, the biggest staffing shortfalls are concentrated in the **late morning**, led by **MEM at 10:00 and 11:00** with a maximum gap of **9** people, followed by **ATL at 11:00** with **8** and **ATL at 12:00** plus **MEM at 9:00 and 12:00** with **7**.\n\nExamples include:\n- **MEM, 11:00** \u2014 **9** short\n- **MEM, 10:00** \u2014 **9** short\n- **ATL, 11:00** \u2014 **8** short\n- **ATL, 12:00** \u2014 **7** short\n- **MEM, 9:00** \u2014 **7** short\n\nAcross the 10 returned terminal-hour combinations, the strongest understaffing pattern is consistently around **9:00 to 12:00**, especially at **MEM**.",
+      "rows": [
+        [
+          "MEM",
+          "11",
+          "9"
+        ],
+        [
+          "MEM",
+          "10",
+          "9"
+        ],
+        [
+          "ATL",
+          "11",
+          "8"
+        ],
+        [
+          "ATL",
+          "12",
+          "7"
+        ],
+        [
+          "MEM",
+          "9",
+          "7"
+        ],
+        [
+          "MEM",
+          "12",
+          "7"
+        ],
+        [
+          "ATL",
+          "10",
+          "5"
+        ],
+        [
+          "DFW",
+          "10",
+          "5"
+        ],
+        [
+          "DFW",
+          "11",
+          "5"
+        ],
+        [
+          "MEM",
+          "13",
+          "5"
+        ]
+      ],
+      "columns": [
+        "terminal",
+        "hour_of_day",
+        "max_gap"
+      ],
+      "query_description": "You want to see the top 10 hours of the day next week when each terminal is most understaffed, based on the largest labor gap between recommended and scheduled headcount during weekdays."
+    },
+    {
+      "question": "How many docks are currently occupied at each terminal right now?",
+      "status": "COMPLETED",
+      "sql": "SELECT `terminal`, COUNT(*) AS `occupied_docks`\nFROM `fedex_fevm_catalog`.`dock_ops_chad_macumber`.`gold_dock_current_state`\nWHERE `terminal` IS NOT NULL\n  AND `telemetry_status` IS NOT NULL\n  AND `telemetry_status` ILIKE '%occupied%'\nGROUP BY `terminal`\nORDER BY `terminal`",
+      "text": "Based on the current dock status data returned by the query, **DFW** has **1 occupied dock** right now. In the visible result, **DFW** is the only terminal listed with occupied docks.",
+      "rows": [
+        [
+          "DFW",
+          "1"
+        ]
+      ],
+      "columns": [
+        "terminal",
+        "occupied_docks"
+      ],
+      "query_description": "You want to see the number of docks that are currently occupied at each terminal right now."
+    }
+  ]
+}

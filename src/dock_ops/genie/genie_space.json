@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {"id": "10000000000000000000000000000001", "question": ["Which terminal has the highest total detention fees?"]},
+      {"id": "10000000000000000000000000000002", "question": ["What hours of the day are we most understaffed next week?"]},
+      {"id": "10000000000000000000000000000003", "question": ["How many docks are currently occupied at each terminal?"]},
+      {"id": "10000000000000000000000000000004", "question": ["What is the average dock utilization by terminal?"]}
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {"identifier": "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state"},
+      {"identifier": "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_utilization_hourly"},
+      {"identifier": "fedex_fevm_catalog.dock_ops_chad_macumber.gold_staffing_forecast"},
+      {"identifier": "fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly"},
+      {"identifier": "fedex_fevm_catalog.dock_ops_chad_macumber.gold_visit_fact"}
+    ]
+  },
+  "instructions": {
+    "example_question_sqls": [
+      {
+        "id": "20000000000000000000000000000001",
+        "question": ["Which terminal has the highest total detention fees?"],
+        "sql": [
+          "SELECT terminal, ROUND(SUM(detention_fee_usd), 0) AS detention_usd\n",
+          "FROM fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly\n",
+          "GROUP BY terminal ORDER BY detention_usd DESC"
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000002",
+        "question": ["What hours are we most understaffed next week?"],
+        "sql": [
+          "SELECT terminal, hour_of_day, MAX(labor_gap) AS max_gap\n",
+          "FROM fedex_fevm_catalog.dock_ops_chad_macumber.gold_staffing_forecast\n",
+          "WHERE labor_gap > 0 AND day_of_week NOT IN (1,7)\n",
+          "GROUP BY terminal, hour_of_day ORDER BY max_gap DESC LIMIT 10"
+        ]
+      }
+    ],
+    "text_instructions": [
+      {
+        "id": "30000000000000000000000000000001",
+        "content": [
+          "You are a dock operations analyst for Meridian Freight Systems, a national LTL carrier with 3 cross-dock terminals (ATL=Atlanta 12 doors, DFW=Dallas 10 doors, MEM=Memphis 14 doors).\n",
+          "TABLE GUIDE:\n",
+          "- gold_terminal_hourly: per terminal-hour utilization %, trailer arrivals, detention_fee_usd, scheduled vs recommended headcount, labor_gap (positive = understaffed), overtime_cost_usd. Use for historical detention, utilization, and staffing-gap questions.\n",
+          "- gold_staffing_forecast: forward-looking 7-day forecast of forecast_headcount vs scheduled_headcount, labor_gap, projected_overtime_cost_usd, understaffed flag. Use for 'next week' / 'upcoming' staffing questions. Weekdays are day_of_week NOT IN (1,7).\n",
+          "- gold_dock_current_state: one row per dock door with telemetry_status (occupied/available), current_trailer_id, and cv_state (the computer-vision classification of the latest camera frame). Use for 'right now' / current occupancy questions.\n",
+          "- gold_dock_utilization_hourly: per door-hour occupancy minutes and utilization %.\n",
+          "- gold_visit_fact: one row per trailer visit with wait_minutes, dwell_minutes, detention_fee_usd, dock_id. Use for per-visit or per-dock detention hotspot questions.\n",
+          "DEFINITIONS: Detention = charge accrued when a trailer waits past the 2-hour free window ($75/hr). Utilization % = occupied door-minutes / available door-minutes. Labor gap = recommended minus scheduled dock headcount.\n",
+          "Always show dollar amounts rounded and prefer grouping by terminal. When asked about 'now' use gold_dock_current_state; when asked about 'next week' use gold_staffing_forecast."
+        ]
+      }
+    ]
+  }
+}
