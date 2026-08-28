@@ -1,0 +1,18 @@
+{
+  "endpoint": "dock-occupancy-cls",
+  "true_labels": [
+    "empty",
+    "obstructed",
+    "empty"
+  ],
+  "predictions": [
+    "empty",
+    "obstructed",
+    "empty"
+  ],
+  "match": [
+    true,
+    true,
+    true
+  ]
+}
