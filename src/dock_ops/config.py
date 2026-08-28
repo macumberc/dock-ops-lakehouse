@@ -8,6 +8,7 @@ No secrets are stored in this module.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 
 # --- Unity Catalog placement (user-scoped schema per house conventions) -------
 CATALOG: str = "fedex_fevm_catalog"
@@ -87,6 +88,10 @@ TERMINALS: tuple[Terminal, ...] = (
     Terminal("DFW", "Dallas Regional", 10),
     Terminal("MEM", "Memphis Hub", 14),
 )
+
+# Fixed reference "today" so every generation run is fully reproducible — filenames
+# and row counts are deterministic and re-runs overwrite identically (no accumulation).
+REFERENCE_DATE: datetime = datetime(2026, 8, 28)
 
 # Simulation window and economics.
 HISTORY_DAYS: int = 30

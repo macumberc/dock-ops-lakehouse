@@ -1,8 +1,8 @@
 {
   "run_name": "04_governance",
-  "run_id": 422867356247406,
+  "run_id": 48282542060714,
   "result_state": "SUCCESS",
-  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/194894833544143/run/422867356247406",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/319581136478056/run/48282542060714",
   "result": {
     "tags_applied": [
       "ALTER SCHEMA fedex_fevm_catalog.dock_ops_chad_macumber",
@@ -17,7 +17,7 @@
     "worker_id_values_seen": [
       "W-REDACTED"
     ],
-    "grants_applied": 3,
+    "grants_applied": 5,
     "grants_failed": [],
     "grants_on_current_state": [
       "account users:SELECT",
@@ -26,10 +26,13 @@
     ],
     "lineage_edges": [
       "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_image_scored -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_current_state",
       "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_utilization_hourly",
       "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
       "fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
       "fedex_fevm_catalog.dock_ops_chad_macumber.gold_dock_utilization_hourly -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_terminal_hourly",
+      "fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits -> fedex_fevm_catalog.dock_ops_chad_macumber.gold_visit_fact",
       "fedex_fevm_catalog.dock_ops_chad_macumber.bronze_dock_images -> fedex_fevm_catalog.dock_ops_chad_macumber.silver_dock_images",
       "fedex_fevm_catalog.dock_ops_chad_macumber.bronze_telemetry -> fedex_fevm_catalog.dock_ops_chad_macumber.silver_visits"
     ],
@@ -37,7 +40,9 @@
       "bronze_dock_images",
       "bronze_telemetry",
       "gold_dock_current_state",
+      "gold_dock_image_scored",
       "gold_dock_utilization_hourly",
+      "gold_staffing_forecast",
       "gold_terminal_hourly",
       "gold_visit_fact",
       "silver_dock_images",

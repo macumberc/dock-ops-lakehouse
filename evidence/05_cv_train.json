@@ -1,0 +1,48 @@
+{
+  "run_name": "05_cv_train",
+  "run_id": 623739713501702,
+  "result_state": "SUCCESS",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/645929724999437/run/623739713501702",
+  "result": {
+    "test_accuracy": 1.0,
+    "full_set_accuracy": 1.0,
+    "labels": [
+      "empty",
+      "docked",
+      "loading",
+      "obstructed"
+    ],
+    "confusion_matrix": [
+      [
+        54,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        31,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        42,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        17
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n       empty      1.000     1.000     1.000        54\n      docked      1.000     1.000     1.000        31\n     loading      1.000     1.000     1.000        42\n  obstructed      1.000     1.000     1.000        17\n\n    accuracy                          1.000       144\n   macro avg      1.000     1.000     1.000       144\nweighted avg      1.000     1.000     1.000       144\n",
+    "model": "fedex_fevm_catalog.dock_ops_chad_macumber.dock_occupancy",
+    "model_version": 2,
+    "run_id": "60cbc67413ab45638857a4df5bc8be3d",
+    "scored_rows": 575
+  },
+  "error": null
+}

@@ -18,7 +18,7 @@ from typing import Any
 
 import numpy as np
 
-from dock_ops.config import TERMINALS, HISTORY_DAYS, RANDOM_SEED, Terminal
+from dock_ops.config import TERMINALS, HISTORY_DAYS, RANDOM_SEED, REFERENCE_DATE, Terminal
 
 # Event types emitted per trailer visit, in causal order.
 EVENT_TYPES = ("gate_in", "dock_assigned", "load_start", "load_end", "gate_out")
@@ -61,7 +61,7 @@ def generate_events(
     """
     rng = np.random.RandomState(seed)
     if end_date is None:
-        end_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = REFERENCE_DATE.replace(hour=0, minute=0, second=0, microsecond=0)
     start_date = end_date - timedelta(days=history_days - 1)
 
     events: list[dict[str, Any]] = []

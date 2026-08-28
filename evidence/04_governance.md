@@ -37,8 +37,9 @@ account users                : SELECT
 chad.macumber@databricks.com : ALL PRIVILEGES
 chad.macumber@databricks.com : MANAGE
 ```
-Bronze/silver remain restricted to the owner; only the three business-facing gold
-tables are granted to `account users`.
+Bronze/silver remain restricted to the owner; only the five business-facing gold
+tables are granted to `account users` (`gold_dock_current_state`, `gold_terminal_hourly`,
+`gold_dock_utilization_hourly`, `gold_staffing_forecast`, `gold_dock_image_scored`).
 
 ## Lineage — the whole DAG is captured by Unity Catalog
 `system.access.table_lineage` (target schema = `dock_ops_chad_macumber`):
@@ -51,8 +52,11 @@ silver_visits               -> gold_dock_current_state
 gold_dock_utilization_hourly-> gold_terminal_hourly
 ```
 
-## Object inventory (all in one governed schema)
-- **Tables:** bronze_telemetry, bronze_dock_images, silver_visits, silver_dock_images,
-  gold_visit_fact, gold_dock_utilization_hourly, gold_terminal_hourly, gold_dock_current_state
+## Object inventory (10 tables in one governed schema)
+- **Bronze:** bronze_telemetry, bronze_dock_images
+- **Silver:** silver_visits, silver_dock_images
+- **Gold:** gold_visit_fact, gold_dock_utilization_hourly, gold_terminal_hourly,
+  gold_dock_current_state, gold_dock_image_scored, gold_staffing_forecast
 - **Functions:** mask_worker_id
 - **Column comments** applied on wait_minutes, detention_fee_usd, worker_id, labor_gap.
+- **Registered UC models:** dock_occupancy (CV), dock_demand_forecast (both `@prod`).

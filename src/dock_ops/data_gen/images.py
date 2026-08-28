@@ -25,7 +25,7 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageDraw
 
-from dock_ops.config import DOCK_STATES, TERMINALS, RANDOM_SEED, Terminal
+from dock_ops.config import DOCK_STATES, TERMINALS, RANDOM_SEED, REFERENCE_DATE, Terminal
 
 IMG_W, IMG_H = 192, 144
 
@@ -138,7 +138,7 @@ def generate_images(
     os.makedirs(target_dir, exist_ok=True)
     rng = np.random.RandomState(seed + 7)
     if end_date is None:
-        end_date = datetime.utcnow().replace(minute=0, second=0, microsecond=0)
+        end_date = REFERENCE_DATE.replace(minute=0, second=0, microsecond=0)
 
     labels = list(DOCK_STATES)
     probs = np.array([_STATE_P[s] for s in labels])

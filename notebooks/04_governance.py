@@ -103,6 +103,8 @@ grant_stmts = [
     f"GRANT SELECT ON TABLE {S}.gold_terminal_hourly TO `account users`",
     f"GRANT SELECT ON TABLE {S}.gold_dock_utilization_hourly TO `account users`",
     f"GRANT SELECT ON TABLE {S}.gold_dock_current_state TO `account users`",
+    f"GRANT SELECT ON TABLE {S}.gold_staffing_forecast TO `account users`",
+    f"GRANT SELECT ON TABLE {S}.gold_dock_image_scored TO `account users`",
 ]
 granted, gfailed = [], []
 for s in grant_stmts:

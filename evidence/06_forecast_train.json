@@ -1,0 +1,86 @@
+{
+  "run_name": "06_forecast_train",
+  "run_id": 198436612520803,
+  "result_state": "SUCCESS",
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/1001966633196634/run/198436612520803",
+  "result": {
+    "test_mae": 1.885,
+    "test_r2": 0.606,
+    "naive_mae": 1.997,
+    "mae_improvement_vs_naive_pct": 5.6,
+    "model": "fedex_fevm_catalog.dock_ops_chad_macumber.dock_demand_forecast",
+    "model_version": 3,
+    "run_id": "d05d69c0e45548debab2dcb1c53b34e3",
+    "forecast_horizon_hours": 168,
+    "understaffed_terminal_hours": 249,
+    "weekday_understaffed_terminal_hours": 241,
+    "top_understaffed": [
+      {
+        "terminal": "MEM",
+        "hour_of_day": 11,
+        "forecast_headcount": 17,
+        "scheduled_headcount": 8,
+        "labor_gap": 9,
+        "projected_overtime_cost_usd": 378.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 10,
+        "forecast_headcount": 17,
+        "scheduled_headcount": 8,
+        "labor_gap": 9,
+        "projected_overtime_cost_usd": 378.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 11,
+        "forecast_headcount": 16,
+        "scheduled_headcount": 8,
+        "labor_gap": 8,
+        "projected_overtime_cost_usd": 336.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 11,
+        "forecast_headcount": 16,
+        "scheduled_headcount": 8,
+        "labor_gap": 8,
+        "projected_overtime_cost_usd": 336.0
+      },
+      {
+        "terminal": "ATL",
+        "hour_of_day": 11,
+        "forecast_headcount": 15,
+        "scheduled_headcount": 7,
+        "labor_gap": 8,
+        "projected_overtime_cost_usd": 336.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 10,
+        "forecast_headcount": 16,
+        "scheduled_headcount": 8,
+        "labor_gap": 8,
+        "projected_overtime_cost_usd": 336.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 11,
+        "forecast_headcount": 15,
+        "scheduled_headcount": 8,
+        "labor_gap": 7,
+        "projected_overtime_cost_usd": 294.0
+      },
+      {
+        "terminal": "MEM",
+        "hour_of_day": 9,
+        "forecast_headcount": 15,
+        "scheduled_headcount": 8,
+        "labor_gap": 7,
+        "projected_overtime_cost_usd": 294.0
+      }
+    ],
+    "total_projected_overtime_next_7d_usd": 27426.0
+  },
+  "error": null
+}
