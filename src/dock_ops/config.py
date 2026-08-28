@@ -30,10 +30,13 @@ FORECAST_MODEL_NAME: str = "dock_demand_forecast"
 CV_ENDPOINT: str = "dock-occupancy-cls"
 MODEL_ALIAS: str = "prod"
 
-# --- Lakebase -----------------------------------------------------------------
+# --- Lakebase (Autoscaling Postgres) ------------------------------------------
 LAKEBASE_PROJECT: str = "dock-ops"
-LAKEBASE_PG_CATALOG: str = "dock_pg"            # UC catalog registered over Postgres
 LAKEBASE_BRANCH: str = "production"
+LAKEBASE_ENDPOINT_RESOURCE: str = "projects/dock-ops/branches/production/endpoints/primary"
+LAKEBASE_HOST: str = "ep-square-resonance-d8lt69ul.database.us-east-2.cloud.databricks.com"
+LAKEBASE_DBNAME: str = "databricks_postgres"
+LAKEBASE_PG_SCHEMA: str = "dock_ops"            # Postgres schema holding served tables
 
 # --- Genie --------------------------------------------------------------------
 GENIE_TITLE: str = "Meridian Dock Utilization"
