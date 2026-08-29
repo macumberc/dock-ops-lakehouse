@@ -52,10 +52,12 @@ captured output of those runs.
                                                               (FastAPI + React ops console)
 ```
 
-## Presentation deck
-Business deck (outcome-led, KPI-quantified, framed for the VP of Operations and the terminal
-manager): **[`deck/index.html`](deck/index.html)** — open in a browser, or read the text
-directly in the file.
+## Presentation deck & demo script
+- Business deck (outcome-led, KPI-quantified, framed for the VP of Operations and the terminal
+  manager): **[`deck/index.html`](deck/index.html)** — open in a browser, or read the text directly.
+- Roleplay demo script for presenting to the business + technical stakeholders (tell-show-tell
+  flow, timed segments, and prepared objection handling for both altitudes):
+  **[`demo/roleplay_demo_script.md`](demo/roleplay_demo_script.md)**.
 
 ## Run it yourself
 Requires the Databricks CLI authenticated to a workspace (`--profile fedex-fevm`) and a Python venv.
