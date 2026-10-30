@@ -1,195 +1,396 @@
-# Roleplay Demo Script — Meridian Freight Dock Operations Intelligence
+# Meridian Freight presenter guide
 
-A ~20–25 minute customer presentation to **two AI personas at once**: a **business
-stakeholder** (VP of Terminal Operations — funds the decision) and a **technical
-stakeholder** (Data/Platform Architect — has to live with the build). Deliver the walkthrough
-once, make the value case, then take questions and objections from each.
+19 minutes of story and live demo, then 6 minutes of discussion.
 
-**Golden rules for the whole session**
-- Lead with the **business outcome**, always. Every screen returns to detention $, overtime $, or utilization.
-- **Tell → Show → Tell** on every segment: say what you'll show, show it, land what it means.
-- **Switch altitude on demand.** Business questions → dollars, risk, time-to-value. Technical questions → architecture, governance, data quality — then one sentence back up to the business impact so you never lose the exec.
-- Keep the demo tight: 5–6 screens, not a feature tour.
-- Have the **deck** (`deck/index.html`) and the **app**
-  (`https://dock-ops-app-7474658947307895.aws.databricksapps.com`) open before you start.
+## 1. Dock staffing before the rush
 
----
+TIME: 30 seconds
 
-## 0 · Demo setup (frame it before you show anything) — ~2 min
+LEAD WITH
+Meridian Freight is a fictional LTL carrier. Today we will follow one decision: how a terminal manager prepares the dock shift before trailer queues and overtime build up.
 
-> "Meridian Freight is a national LTL carrier running three cross-dock terminals — Atlanta,
-> Dallas, Memphis, 36 doors total. The loading dock is their bottleneck: trailers arrive in
-> waves, doors sit idle in the morning and get slammed by midday, and supervisors staff from
-> a fixed shift plan that never changes. The result, measured over just 31 days: **$235,799 in
-> trailer detention fees and $108,780 in avoidable overtime — about $4.1M a year** — and no
-> real-time visibility into what's actually happening on the dock.
->
-> In the next 20 minutes I'll show you the platform we built to fix that: it sees every dock
-> in real time, forecasts labor demand, and tells supervisors where to move people *before*
-> trailers start racking up detention. I'll show you the operational console, the forecast,
-> the AI briefing, and how it's governed — and I'll tie each one back to the dollars."
+SHOW
+Introduce the VP of Terminal Operations as the economic sponsor and the Data/Platform Architect as the owner of trusted, usable data. The proposed outcome is a scoped Memphis pilot, with owners and measurable gates.
 
-*(This single paragraph frames the customer, the problem, the quantified stakes, and the
-agenda. That's the "demo setup" and "tell" the rubric wants — do not skip it.)*
+LAND THE POINT
+The story starts with the operator's problem, then tests a specific staffing decision in the working demo.
 
----
+TRANSITION
+First, where does a loading-dock decision fit in this carrier's operation?
 
-## 1 · The problem, in their numbers (deck) — ~3 min
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
 
-**Tell:** "First, let me show you where the money is going."
+SOURCES
+DEMO.md; src/dock_ops/config.py. Cover photograph: Pexels, https://www.pexels.com/photo/warehouse-with-delivery-truck-exiting-the-loading-dock-29786116/ (illustrative stock photograph, not Meridian or Federal Express).
 
-**Show:** Deck slides 2–3 (the cost breakdown + the staffing-mismatch table).
 
-**Tell (land it):**
-> "The root cause isn't capacity — average utilization is only ~40%. It's *timing*. At 11am
-> the docks need ~10 workers and the plan schedules 7; at 2am the plan has people standing
-> around. Memphis is the worst — **$91,642 in detention** and a peak need of 17 workers
-> against 8 scheduled. This is a scheduling problem hiding as a capacity problem, and today
-> nobody can see it."
+## 2. The loading dock sets the pace
 
----
+TIME: 1.5 minutes
 
-## 2 · The live operations console (app) — ~5 min
+LEAD WITH
+This is a less-than-truckload operation: freight moves through the terminal and changes trailers. The dock connects the arrival schedule to the outbound departure.
 
-**Tell:** "Here's what the terminal supervisor sees now — one screen for all 36 doors."
+SHOW
+Orient the room to Atlanta, Dallas, and Memphis, totaling 36 doors. The terminal manager must align workers with door activity. The VP cares about trailer waiting and labor cost. The architect must provide reliable data to both.
 
-**Show:** The app. Walk top to bottom:
-- **KPI header** — detention, avoidable overtime, avg vs peak utilization (88–95% peak).
-- **Live dock board** — every door, colored by real-time occupancy and confirmed by the
-  computer-vision read of the camera frame. "This is served from Lakebase — our operational
-  Postgres — so it's a low-latency, always-current board, not a report that's an hour stale."
-- **Next-shift understaffing table** — "The forecast has already flagged the exact
-  terminal-hours that will be short next week. Memphis, 10–11am, nine people short."
-- **Utilization-by-hour chart** — orange bars are the mid-day crunch.
+LAND THE POINT
+A useful solution must improve a shift decision, not merely collect another camera feed or report.
 
-**Tell (land it):**
-> "So in one glance the supervisor knows what's happening now *and* what's coming — and every
-> number on this screen ties to a dollar figure the VP cares about."
+TRANSITION
+The problem is that the arrival wave changes while the roster barely does.
 
----
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
 
-## 3 · The AI shift briefing (app) — ~3 min
+SOURCES
+src/dock_ops/config.py; DEMO.md. Operational framing describes the fictional scenario, not a real carrier assessment.
 
-**Tell:** "Supervisors don't have time to read charts at 6am. So we ground a foundation model
-in this exact data and let it write the shift plan."
 
-**Show:** Click **Generate briefing**. Read the top action aloud.
+## 3. The rush arrives. The roster stays flat
 
-**Tell (land it):**
-> "That briefing is generated live from the current numbers — it's telling the supervisor to
-> move nine people into Memphis 10–11am and what it's worth. This is the difference between a
-> dashboard and a decision. It closes the loop from *data* to *action*."
+TIME: 1.5 minutes
 
----
+LEAD WITH
+The schedule is nearly flat during the day. The workload has a pronounced peak. That mismatch is visible before we discuss any AI.
 
-## 4 · Natural-language analytics (Genie) — ~2 min
+SHOW
+Read the chart at 06:00 and 11:00. At 11:00, actual-workload staffing averages 10.1 workers per terminal against 7.0 scheduled, a 3.1-worker gap. These are historical network averages, not Memphis forecast rows.
 
-**Tell:** "When leadership has a one-off question, they shouldn't have to file a ticket."
+LAND THE POINT
+This is a timing opportunity. It suggests reallocating labor across hours, subject to skills, breaks, and labor constraints.
 
-**Show:** Genie: ask *"Which terminal has the highest detention fees?"* → Memphis, $91,642.
+TRANSITION
+Now connect the missed hours to the cost line the VP owns.
 
-**Tell (land it):**
-> "No SQL, no analyst in the loop — governed answers straight from the same certified tables."
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
 
----
+SOURCES
+evidence/2026-10-15-data-reconciliation.md. Selected-hour chart after the arrival-hour correction. Model forecasts appear separately on slide 7.
 
-## 5 · How it's built & governed (for the architect) — ~3 min
 
-**Tell:** "Quickly, for the technical side of the room — this is one governed journey, not six
-stitched-together tools."
+## 4. The mismatch creates a measurable cost
 
-**Show:** Deck architecture slide (or the repo). Name the stages:
-- Lakeflow ingests gate telemetry **and** dock-camera images; bronze→silver with
-  data-quality expectations.
-- Unity Catalog governs all of it — lineage end to end, a **column mask on worker IDs**,
-  role-based access so analysts get gold, not raw.
-- A CV model and a staffing forecast, both registered in UC and served.
-- Lakebase serves the live state; Genie and the app read the same certified gold.
+TIME: 1 minute
 
-**Tell (land it, back to business):**
-> "The point for the business: it's one platform, one governance model, one source of truth —
-> which is what makes it cheap to extend to the next terminal and safe to put in front of the
-> floor."
+LEAD WITH
+The synthetic baseline is $235,940.19 in detention plus $108,780 in modeled overtime. Together that is $344,720.19 across 31 days.
 
----
+SHOW
+Compare the stacked terminal bars. Memphis combines $91,649.63 in detention and $43,974 in modeled overtime, or $135,623.63. It has the largest detention cost and becomes the pilot candidate.
 
-## Objection handling — prepare for both, expect to switch altitude mid-answer
+LAND THE POINT
+The network annualized cost is about $4.06 million. This is cost exposure in a synthetic scenario; it is not realized savings or a Federal Express financial result.
 
-### Business stakeholder (cost · risk · time-to-value)
+TRANSITION
+So what should change in the manager's next shift?
 
-**"How much of that $4.1M do we actually get back?"**
-> "Proactive dock staffing typically recovers 30–40% of detention — call it **$1.2–1.6M
-> annual run-rate** across the three terminals. I'd hold us to a measured detention-reduction
-> target on a single pilot terminal in the first 30 days before we claim the network number."
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
 
-**"What's the time to value?"**
-> "This is a working platform today. 30 days to wire one terminal's real yard-management and
-> camera feeds and baseline the savings; 60–90 days to roll to all three and connect the
-> staffing recommendations into your labor system. You see the detention line move inside a
-> quarter."
+SOURCES
+evidence/2026-10-15-data-reconciliation.md; evidence/workspace-demo-current.json. Economics assume a two-hour free window and $75 per trailer-hour beyond it.
 
-**"What's the risk if the forecast is wrong?"**
-> "The forecast is decision support, not autopilot — the supervisor still approves the move.
-> And the downside is asymmetric: being one head over at 11am costs a few dollars of labor;
-> being nine heads short costs hundreds in detention. The forecast beats the flat plan it
-> replaces, and even a rough forecast beats a fixed shift that's wrong every single day."
 
-**"Why Databricks and not a point solution / a dashboard we already have?"**
-> "A dashboard shows you the problem after the fact. This closes the loop — vision, forecast,
-> live serving, and the AI briefing — on one governed platform, so it extends to your next
-> use case (yard, linehaul, labor) without re-buying the stack."
+## 5. A different start to the next shift
 
-### Technical stakeholder (architecture · data quality · security · integration)
+TIME: 1 minute
 
-**"Is the data quality real or is this a happy-path demo?"**
-> "Data quality is enforced in the pipeline — the silver layer has expectations
-> (`valid_visit`, `non_negative_dwell`, `has_dock`) and the run logged **zero failed records
-> across 9,149 visits**. If a feed sends malformed events, they're dropped and counted in the
-> pipeline event log, not silently trusted." *(Then, one line up: "so the numbers the VP is
-> looking at are trustworthy.")*
+LEAD WITH
+The proposed workflow changes when and how the manager makes a staffing decision.
 
-**"How is the CV model actually served, and how do you retrain it?"**
-> "It's registered in Unity Catalog with a `@prod` alias and served as a pyfunc endpoint that
-> takes the raw image — decode, featurize, predict — so integration is just an HTTP call.
-> Retraining is a job against the same governed image table; you promote a new version by
-> moving the alias, no endpoint change."
+SHOW
+Walk one row at a time. A dock snapshot gives an observation time and door state. A dated forecast identifies the gap. A concise briefing supports the supervisor, who still checks worker availability, skills, and shift rules.
 
-**"Security — this has worker data and cameras."**
-> "Worker IDs are protected by an attribute-based **column mask** tied to group membership —
-> a supervisor group sees them, everyone else sees a redacted token — and it's enforced in
-> Unity Catalog, so it holds no matter how the data is queried: app, Genie, or SQL. Access is
-> role-based: analysts get the gold layer, not the raw feeds. Nothing is hardcoded; the app
-> runs as a service principal with least-privilege grants."
+LAND THE POINT
+The prototype is decision support. It does not autonomously dispatch labor or integrate with an HR scheduler.
 
-**"How does this integrate with our existing YMS / camera infrastructure?"**
-> "Ingest is Auto Loader over a landing volume, so any system that can drop files or stream
-> events plugs in — we're reading gate scans and image frames today. The operational store is
-> standard Postgres (Lakebase), so your existing tools can read the live board over a normal
-> SQL connection." *(Up a level: "which means we integrate without ripping out what you have.")*
+TRANSITION
+Let's follow that routine in the working console.
 
-**"What about latency / scale on the live board?"**
-> "The live board reads from Lakebase Postgres, which is built for low-latency operational
-> reads — that's exactly why the serving layer is Postgres and the analytics stay on the
-> lakehouse. Scaling to more terminals is more rows, not a re-architecture."
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
 
-**"Genie — can I trust the SQL it writes?"**
-> "It's constrained to the certified gold tables with curated instructions and example SQL,
-> and every answer shows the generated SQL and the rows — it's auditable, and it inherits the
-> same Unity Catalog permissions, so it can't see anything the user couldn't."
+SOURCES
+app/app.py; app/static/index.html; notebooks/00_demo_walkthrough.py. The current and proposed routines are scenario framing, not a measured customer before/after study.
 
----
 
-## Closing (land the value one more time) — ~1 min
-> "So: today Meridian is losing about $4.1M a year to a dock scheduling problem it can't see.
-> This platform makes the dock visible, forecasts the crunch, and tells supervisors what to do
-> about it — on one governed lakehouse we can stand up on a pilot terminal in 30 days. The ask
-> is a pilot at your worst terminal, Memphis, with a detention-reduction target we measure
-> against. Where would you want to start?"
+## 6. One operating view for all 36 doors
 
----
+TIME: 4 minutes including the live app
 
-### Delivery reminders
-- Open with the outcome; never open with the architecture.
-- When the architect drills in, give the real detail — then one sentence back to the dollars.
-- If a question is above your certainty, commit to the follow-up rather than bluffing.
-- Watch the clock: setup 2, problem 3, app 5, briefing 3, Genie 2, architecture 3, objections + close ~7.
+LEAD WITH
+The terminal manager should be able to answer: what is the dock state, and which shift needs attention? I will show both in one operating view.
+
+SHOW
+Open https://dock-ops-app-7474658947307895.aws.databricksapps.com. Confirm the visible synthetic snapshot timestamp. Inspect all 36 doors, then point to the top Memphis staffing rows. The board and staffing plan report Lakebase as their source. Show the historical KPI period and the hour-of-day profile without reading every tile. Use the slide screenshot only as a labeled fallback.
+
+LAND THE POINT
+The manager can move from a network view to a particular terminal-hour. The screenshot shows a verified October 15 app session, with July–September synthetic data; it is not a live customer feed.
+
+TRANSITION
+The next screen makes the proposed staffing action explicit.
+
+OPTIONAL DISCUSSION
+If the app reports a warehouse fallback, state that source. Lakebase provides fast reads of the copied snapshot; a production implementation still needs a freshness SLA and ongoing synchronization.
+
+SOURCES
+deck/assets/operations-focus.png, cropped from scratch/deployed-app-verified.png; evidence/2026-10-15-app-current.json; app/app.py.
+
+
+## 7. A recommendation the supervisor can act on
+
+TIME: 3 minutes including briefing and Genie
+
+LEAD WITH
+Here is the specific decision the forecast supports: Memphis at 10am on September 3 needs 17 workers against 8 scheduled, a gap of 9. This is a dated synthetic example.
+
+SHOW
+In the app (https://dock-ops-app-7474658947307895.aws.databricksapps.com), click Generate briefing. Check the first recommendation against that exact forecast row. Then open Genie (https://fevm-fedex-fevm.cloud.databricks.com/genie/rooms/01f1a3243b00149fa4876211f8b5c004) and ask: Which terminal has the highest total detention fees? Include the date range of this synthetic dataset. The verified answer is Memphis, $91,650 rounded. Inspect the SQL and result rows. If useful, ask which dated shifts have the largest staffing gaps.
+
+LAND THE POINT
+The staffing number is a planning signal. A supervisor must decide whether workers can move and record the actual action. The model's $378 for this hour is modeled overtime exposure, not a proven saving.
+
+TRANSITION
+For the architect, here is the data path that makes this answer traceable.
+
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
+
+SOURCES
+evidence/06_forecast.md; evidence/2026-10-15-genie-current.json; evidence/2026-10-15-genie-staffing.json; evidence/2026-10-15-app-current.json.
+
+
+## 8. The data journey behind that decision
+
+TIME: 1.5 minutes
+
+LEAD WITH
+The architecture follows the operational decision we just made.
+
+SHOW
+Lakeflow ingests gate events and camera frames into bronze and silver. Gold provides curated metrics and the operational snapshot. Unity Catalog governs lakehouse access and registered models. Forecast and CV predictions feed the gold serving tables. Lakebase stores an operational copy for the app; Genie queries the gold analytics directly. The app also calls a Databricks-hosted foundation model to draft the briefing from the selected staffing rows.
+
+LAND THE POINT
+The same definitions support operational reads and leadership questions. Lakebase has separate Postgres roles and a snapshot-copy script; UC policies do not automatically follow copied data. The forecast is batch scored, and the image classifier has a model endpoint.
+
+TRANSITION
+Integration is demonstrated. The next question is what the pilot still needs to prove.
+
+OPTIONAL DISCUSSION
+Show the worker-ID mask and grants in the walkthrough if asked. It is a group-based table column mask, not a governed-tag ABAC policy. A real-feed design must address late events, identity, image retention, and serving freshness.
+
+SOURCES
+notebooks/01_generate_data.py through notebooks/07_genai_assistant.py; scripts/lakebase_sync.py; app/app.py; original icons from ~/Documents/logos.
+
+
+## 9. Prototype evidence and pilot success measures
+
+TIME: 1 minute
+
+LEAD WITH
+The demo proves that the components connect and that the displayed answer can be checked. It does not prove savings on real operations.
+
+SHOW
+Separate four verified prototype checks from four proposed pilot targets. Detention per trailer should fall at least 10%, overtime per trailer should not rise, forecast MAE should be no greater than two workers, and p95 observation age should be within five minutes. These are suggested acceptance criteria for sponsor review, not achieved prototype SLAs or industry benchmarks.
+
+LAND THE POINT
+Baseline and comparable-shift selection come before the intervention. Real-camera evaluation and supervisor acceptance remain part of readiness.
+
+TRANSITION
+A small pilot needs named owners and explicit stop/go gates to produce that evidence.
+
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
+
+SOURCES
+evidence/2026-10-15-app-current.json; evidence/2026-10-15-cv-current.json; evidence/2026-10-15-genie-current.json; evidence/workspace-demo-current.json. Pilot thresholds are proposed assumptions.
+
+
+## 10. A 30-day pilot with owners and decision gates
+
+TIME: 1.5 minutes
+
+LEAD WITH
+Propose one terminal for 30 days, with a decision gate each week. The calendar begins when owners and access are ready, not on a promise made in this presentation.
+
+SHOW
+Week 1 establishes feeds, metric definitions, and comparable shifts. Week 2 runs the forecast in shadow mode and validates camera conditions and freshness. Week 3 trials supervisor-approved staffing changes and logs overrides. Week 4 compares detention and overtime per trailer and reviews the net cost.
+
+LAND THE POINT
+The VP and finance partner decide whether to expand, correct the approach, or stop. Each gate has an accountable role; names must be assigned at kickoff.
+
+TRANSITION
+That decision needs a transparent economic baseline and an agreed cost envelope.
+
+OPTIONAL DISCUSSION
+If feeds or labor-system constraints block Week 1, scope a data-readiness phase rather than claiming that a fixed 30-day value test has begun.
+
+SOURCES
+Proposed pilot plan. No customer dates, staffing commitments, budget, or implementation effort have been approved.
+
+
+## 11. The Memphis business case
+
+TIME: 1 minute
+
+LEAD WITH
+Size the first business case for Memphis, not the entire network.
+
+SHOW
+The exact Memphis synthetic baseline is $91,649.63 plus $43,974 = $135,623.63 over 31 days. At constant trailer volume, the proposed 10% detention-per-trailer improvement would reduce detention by $9,164.96, rounded to $9,165 gross benefit. This assumes no overtime increase and illustrates the same target shown on the pilot scorecard; it is not an achieved saving.
+
+LAND THE POINT
+Before approval, finance must replace simulated exposure with actual invoices and payroll. Subtract incremental regular labor, platform consumption, and implementation cost. Do not double-count overtime shifted to regular staffing as free savings.
+
+TRANSITION
+The immediate ask is a named sponsor and a scoped kickoff that can approve those assumptions.
+
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
+
+SOURCES
+evidence/2026-10-15-data-reconciliation.md. Calculation: 91649.63 * 0.10 = 9164.963 at constant trailer volume and no overtime increase. No industry benchmark or guaranteed ROI claim.
+
+
+## 12. Decision today: a Memphis pilot
+
+TIME: 1.5 minutes, then 6 minutes for discussion
+
+LEAD WITH
+We have followed the problem from the roster mismatch to a specific Memphis staffing decision. The next step is a measured pilot with an accountable sponsor.
+
+SHOW
+Ask the VP to nominate the Memphis sponsor and terminal owner within two business days. Ask the terminal manager and architect to confirm access to gate events, camera frames, labor schedules, and cost data within five business days. Propose a 45-minute kickoff with the sponsor, finance, and delivery owners to approve the scorecard, cost cap, and start gate.
+
+LAND THE POINT
+The meeting should end with a named accountable owner and a scheduled kickoff. If readiness is incomplete, agree the missing input and its owner rather than accepting a vague follow-up.
+
+TRANSITION
+Invite questions from the VP on economics and adoption, and from the architect on data readiness and governance. Use the appendices only as needed.
+
+OPTIONAL DISCUSSION
+Ask: Who will own Memphis operations for this pilot, and can we schedule the kickoff with the platform and finance owners? Confirm the answer and the next deliverable before closing.
+
+SOURCES
+Proposed next steps. Timing is relative to sponsor agreement, not a calendar commitment. DEMO.md; the preceding pilot scope and illustrative economics.
+
+
+## Objection-response drills
+
+Use these as concise answer patterns, then return to the decision the stakeholder owns.
+Lead with the direct answer, give one supporting fact, name the limitation, and close with
+the pilot action that resolves the uncertainty.
+
+### VP of Terminal Operations
+
+**"How much money will this actually save?"**
+
+The prototype does not establish realized savings. Memphis has $91,649.63 of synthetic
+31-day detention exposure, so the proposed 10% detention-per-trailer target represents
+about $9,165 of gross benefit at constant volume. Finance still needs to replace the
+simulation with invoice and payroll data, then subtract labor, platform, and implementation
+cost. The pilot decision is whether that measured net benefit clears the agreed cost cap.
+
+**"How quickly do we see value?"**
+
+The proposed pilot is four weeks after the owners, feeds, and baseline are ready. Week 1
+establishes comparable shifts, Week 2 runs in shadow mode, Week 3 trials
+supervisor-approved changes, and Week 4 compares detention and overtime per trailer. If
+data readiness slips, call it a readiness phase rather than promising a fixed value date.
+
+**"What happens when the forecast is wrong?"**
+
+The forecast is decision support, not autonomous dispatch. Its recorded synthetic-data MAE
+is 1.885 workers, but a supervisor still checks skills, breaks, and availability before
+moving labor. The pilot runs shadow mode first, records overrides, and stops or recalibrates
+if the error or overtime guardrail misses the agreed threshold.
+
+**"Why Databricks instead of another dashboard?"**
+
+The operating view is the last mile, not the whole solution. The same governed journey
+ingests the events, creates trusted metrics, trains and registers the models, serves the
+operational snapshot, supports natural-language questions, and produces the supervisor
+briefing. The pilot tests whether that integrated path improves the staffing decision; it
+does not assume platform consolidation is valuable by itself.
+
+### Data and Platform Architect
+
+**"How do you know the data is trustworthy?"**
+
+Lakeflow applies expectations while building the silver visit records, Unity Catalog
+captures lineage into the gold layer, and the walkthrough independently reconciles
+$235,940.19 of detention and $108,780 of modeled overtime to their source formulas. The
+pilot must add real-feed freshness, late-event handling, and comparable-shift definitions
+before these figures can become operational KPIs.
+
+**"How are worker and camera data secured?"**
+
+The lakehouse uses a group-based worker-ID column mask, role-based access, and a dedicated
+app service principal. Lakebase is a separate security boundary with Postgres roles; Unity
+Catalog masks do not automatically follow copied data. A production design therefore needs
+explicit Lakebase grants, image-retention policy, and identity testing as pilot gates.
+
+**"How does this integrate with our current systems, and what is the latency?"**
+
+The prototype lands gate events and camera frames for Lakeflow ingestion, then copies the
+curated operational state into Lakebase for low-latency app reads. That proves the interfaces,
+not a production SLA. During the pilot, define the source-system contract, automate the
+incremental synchronization, measure p95 observation age, and fail visibly to the governed
+gold snapshot if Lakebase is unavailable.
+
+**"Can we trust the models and Genie answers?"**
+
+The staffing model uses a time-based holdout and beats the hourly-mean baseline by 5.6%; the
+camera classifier and its endpoint work on synthetic images only. Genie is constrained to
+the curated gold tables, and its generated SQL and result rows are inspectable. Real-camera
+accuracy, model monitoring, promotion criteria, and user-identity behavior remain explicit
+pilot validation work rather than demonstrated production guarantees.
+
+
+## 13. Appendix: technical evidence and limits
+
+TIME: Optional technical appendix
+
+LEAD WITH
+The technical proof is inspectable, and its limits define the pilot work.
+
+SHOW
+The forecast uses GradientBoosting with a five-day time holdout. MAE is 1.885, versus 1.997 for the hourly-mean baseline, and R-squared is 0.606. The arrival-hour correction did not retrain that model. The classifier is a UC-registered pyfunc deployed as version 2; a UC alias change alone does not refresh the serving endpoint.
+
+LAND THE POINT
+Four successful image-state requests and synthetic holdout accuracy do not establish real-camera accuracy. UC masks apply to lakehouse reads, while Lakebase uses separate Postgres roles. Genie and the app can run under different configured identities.
+
+TRANSITION
+Return to the specific pilot gate or decision the question concerns.
+
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
+
+SOURCES
+evidence/05_cv_model.md; evidence/06_forecast.md; evidence/2026-10-15-cv-current.json; evidence/2026-10-15-app-current.json; notebooks/04_governance.py.
+
+
+## 14. Appendix: presenter navigation
+
+TIME: Presenter reference
+
+LEAD WITH
+Pre-open the console, Genie, and the walkthrough. Keep the two stakeholder roles in mind throughout.
+
+SHOW
+Delivery timing: setup and context 2 minutes; roster mismatch 1.5; cost 1; operating change 1; console 4; briefing and Genie 3; architecture 1.5; scorecard 1; pilot 1.5; economics 1; decision 1.5. Total 19 minutes plus 6 for discussion. The actual prepared segment totals 19 minutes by the slide-level timing plan.
+
+LAND THE POINT
+History is July 30–August 29, 2026. Forecasts cover August 30–September 5. The software runs live, while its underlying example data is a dated synthetic replay. If a live step fails, label the displayed screenshot or saved evidence as a fallback.
+
+TRANSITION
+Resume the main narrative at the customer decision, not a feature tour.
+
+OPTIONAL DISCUSSION
+Take the question at the audience's level, then return to the operational decision.
+
+SOURCES
+deck/deck-spec.json; evidence/workspace-demo-current.json; evidence/2026-10-15-app-current.json; evidence/2026-10-15-genie-current.json.

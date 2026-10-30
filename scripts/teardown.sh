@@ -24,4 +24,8 @@ databricks --profile $P pipelines delete 9f101d4c-0023-4662-9a2a-33afcf87dd37 2>
 databricks --profile $P schemas delete fedex_fevm_catalog.dock_ops_chad_macumber --force 2>&1 | head -1 || \
   echo "  (drop schema via SQL: DROP SCHEMA fedex_fevm_catalog.dock_ops_chad_macumber CASCADE)"
 
+# 7. Presenter walkthrough and saved evidence published by the Yoodli launcher.
+uv run --no-project python scripts/publish_workspace_demo.py \
+  --profile "$P" --catalog fedex_fevm_catalog --teardown-launcher
+
 echo "Teardown complete."

@@ -1,0 +1,18 @@
+{
+  "endpoint": "dock-occupancy-cls",
+  "expected": [
+    "empty",
+    "docked",
+    "loading",
+    "obstructed"
+  ],
+  "response": {
+    "predictions": [
+      "empty",
+      "docked",
+      "loading",
+      "obstructed"
+    ],
+    "served-model-name": "dock_occupancy-2"
+  }
+}

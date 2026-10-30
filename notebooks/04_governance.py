@@ -79,7 +79,7 @@ print("tags applied:", len(applied), "failed:", len(failed))
 for f in failed: print("  FAIL:", f)
 
 # COMMAND ----------
-# MAGIC %md ### Column mask on the sensitive worker-id (ABAC — references group membership)
+# MAGIC %md ### Column mask on the sensitive worker-id (group membership)
 
 # COMMAND ----------
 

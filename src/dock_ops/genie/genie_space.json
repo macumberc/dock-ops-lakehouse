@@ -3,8 +3,8 @@
   "config": {
     "sample_questions": [
       {"id": "10000000000000000000000000000001", "question": ["Which terminal has the highest total detention fees?"]},
-      {"id": "10000000000000000000000000000002", "question": ["What hours of the day are we most understaffed next week?"]},
-      {"id": "10000000000000000000000000000003", "question": ["How many docks are currently occupied at each terminal?"]},
+      {"id": "10000000000000000000000000000002", "question": ["Which dated shifts have the largest staffing gaps in the synthetic forecast?"]},
+      {"id": "10000000000000000000000000000003", "question": ["How many docks are occupied at each terminal in the latest synthetic snapshot? Include its timestamp."]},
       {"id": "10000000000000000000000000000004", "question": ["What is the average dock utilization by terminal?"]}
     ]
   },
@@ -30,12 +30,12 @@
       },
       {
         "id": "20000000000000000000000000000002",
-        "question": ["What hours are we most understaffed next week?"],
+        "question": ["Which dated shifts have the largest staffing gaps in the synthetic forecast?"],
         "sql": [
-          "SELECT terminal, hour_of_day, MAX(labor_gap) AS max_gap\n",
+          "SELECT terminal, hour_ts, forecast_headcount, scheduled_headcount, labor_gap\n",
           "FROM fedex_fevm_catalog.dock_ops_chad_macumber.gold_staffing_forecast\n",
           "WHERE labor_gap > 0 AND day_of_week NOT IN (1,7)\n",
-          "GROUP BY terminal, hour_of_day ORDER BY max_gap DESC LIMIT 10"
+          "ORDER BY labor_gap DESC, hour_ts, terminal LIMIT 10"
         ]
       }
     ],
@@ -51,7 +51,7 @@
           "- gold_dock_utilization_hourly: per door-hour occupancy minutes and utilization %.\n",
           "- gold_visit_fact: one row per trailer visit with wait_minutes, dwell_minutes, detention_fee_usd, dock_id. Use for per-visit or per-dock detention hotspot questions.\n",
           "DEFINITIONS: Detention = charge accrued when a trailer waits past the 2-hour free window ($75/hr). Utilization % = occupied door-minutes / available door-minutes. Labor gap = recommended minus scheduled dock headcount.\n",
-          "Always show dollar amounts rounded and prefer grouping by terminal. When asked about 'now' use gold_dock_current_state; when asked about 'next week' use gold_staffing_forecast."
+          "Always show dollar amounts rounded and prefer grouping by terminal. All data describes fictional Meridian Freight and is synthetic. The history and forecasts are a fixed replay rather than current production data. For 'now', return the latest synthetic gold_dock_current_state snapshot and explicitly report as_of_ts. For 'next week' or 'upcoming', inspect MIN(hour_ts) and MAX(hour_ts) in gold_staffing_forecast and disclose the actual date range rather than implying that it is relative to today's calendar. Include hour_ts in staffing recommendations. overtime_cost_usd is modeled cost based on the staffing gap, not actual payroll or demonstrated recoverable savings."
         ]
       }
     ]

@@ -1,0 +1,87 @@
+{
+  "published_at_utc": "2026-10-15T21:42:39.099223+00:00",
+  "profile": "fedex-fevm",
+  "host": "https://fevm-fedex-fevm.cloud.databricks.com",
+  "presenter": "chad.macumber@databricks.com",
+  "catalog": "fedex_fevm_catalog",
+  "schema_name": "dock_ops_chad_macumber",
+  "workspace_path": "/Workspace/Users/chad.macumber@databricks.com/meridian_yoodli_demo",
+  "notebook_path": "/Workspace/Users/chad.macumber@databricks.com/meridian_yoodli_demo/notebooks/00_demo_walkthrough",
+  "data_classification": "synthetic",
+  "validation_status": "SUCCESS",
+  "notebook_url": "https://fevm-fedex-fevm.cloud.databricks.com/#notebook/3195548178609337",
+  "run_id": 215469768958398,
+  "run_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/135215719684712/run/215469768958398",
+  "output": {
+    "metadata": {
+      "cleanup_duration": 1000,
+      "creator_user_name": "chad.macumber@databricks.com",
+      "effective_performance_target": "PERFORMANCE_OPTIMIZED",
+      "end_time": 1792100621260,
+      "execution_duration": 56000,
+      "job_id": 135215719684712,
+      "job_run_id": 215469768958398,
+      "number_in_job": 1069094329515020,
+      "run_id": 1069094329515020,
+      "run_name": "validate_demo",
+      "run_page_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/135215719684712/run/1069094329515020",
+      "run_type": "SUBMIT_RUN",
+      "setup_duration": 4000,
+      "start_time": 1792100560207,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "status": {
+        "state": "TERMINATED",
+        "termination_details": {
+          "code": "SUCCESS",
+          "message": "",
+          "type": "SUCCESS"
+        }
+      },
+      "tasks": [
+        {
+          "attempt_number": 0,
+          "cleanup_duration": 1000,
+          "effective_performance_target": "PERFORMANCE_OPTIMIZED",
+          "end_time": 1792100621260,
+          "execution_duration": 56000,
+          "notebook_task": {
+            "base_parameters": {
+              "catalog": "fedex_fevm_catalog",
+              "schema_name": "dock_ops_chad_macumber"
+            },
+            "notebook_path": "/Workspace/Users/chad.macumber@databricks.com/meridian_yoodli_demo/notebooks/00_demo_walkthrough",
+            "source": "WORKSPACE"
+          },
+          "run_id": 1069094329515020,
+          "run_page_url": "https://fevm-fedex-fevm.cloud.databricks.com/?o=7474658947307895#job/135215719684712/run/1069094329515020",
+          "setup_duration": 4000,
+          "start_time": 1792100560207,
+          "state": {
+            "life_cycle_state": "TERMINATED",
+            "result_state": "SUCCESS",
+            "state_message": "",
+            "user_cancelled_or_timedout": false
+          },
+          "status": {
+            "state": "TERMINATED",
+            "termination_details": {
+              "code": "SUCCESS",
+              "message": "",
+              "type": "SUCCESS"
+            }
+          },
+          "task_key": "validate_demo"
+        }
+      ]
+    },
+    "notebook_output": {
+      "result": "{\"status\": \"validated\", \"data_classification\": \"synthetic\", \"catalog\": \"fedex_fevm_catalog\", \"schema_name\": \"dock_ops_chad_macumber\", \"reconciliation\": {\"visit_detention_usd\": 235940.19, \"trailer_visits\": 9149, \"gold_detention_usd\": 235940.19, \"modeled_overtime_usd\": \"108780.00\", \"recomputed_overtime_usd\": \"108780.0\", \"calendar_days\": 31, \"detention_difference_usd\": 0.0, \"overtime_difference_usd\": \"0.00\", \"illustrative_annual_cost_usd\": 4058802.24}}",
+      "truncated": false
+    }
+  }
+}

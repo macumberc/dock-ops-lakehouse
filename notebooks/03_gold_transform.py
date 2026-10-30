@@ -106,16 +106,25 @@ arr AS (
     ROUND(SUM(detention_fee_usd),2) AS detention_fee_usd,
     SUM(CASE WHEN detention_hours > 0 THEN 1 ELSE 0 END) AS detained_trailers
   FROM {S}.silver_visits GROUP BY terminal, date_trunc('HOUR', gate_in)
+),
+-- Preserve arrival hours even when no door is occupied yet. Anchoring only
+-- on occupancy drops gate-in detention fees for visits waiting for a door.
+hour_spine AS (
+  SELECT terminal, hour_ts FROM occ
+  UNION
+  SELECT terminal, hour_ts FROM arr
+  UNION
+  SELECT terminal, hour_ts FROM load_minutes
 )
 SELECT
-  o.terminal, o.hour_ts,
-  hour(o.hour_ts) AS hour_of_day,
-  dayofweek(o.hour_ts) AS day_of_week,
+  h.terminal, h.hour_ts,
+  hour(h.hour_ts) AS hour_of_day,
+  dayofweek(h.hour_ts) AS day_of_week,
   d.door_count,
-  ROUND(o.occupied_door_minutes,1) AS occupied_door_minutes,
-  ROUND(o.demand_door_minutes,1) AS demand_door_minutes,
-  ROUND(o.occupied_door_minutes / (d.door_count*60.0) * 100, 1) AS utilization_pct,
-  ROUND(o.demand_door_minutes  / (d.door_count*60.0) * 100, 1) AS demand_pct,
+  ROUND(COALESCE(o.occupied_door_minutes,0),1) AS occupied_door_minutes,
+  ROUND(COALESCE(o.demand_door_minutes,0),1) AS demand_door_minutes,
+  ROUND(COALESCE(o.occupied_door_minutes,0) / (d.door_count*60.0) * 100, 1) AS utilization_pct,
+  ROUND(COALESCE(o.demand_door_minutes,0)  / (d.door_count*60.0) * 100, 1) AS demand_pct,
   COALESCE(a.trailers_arrived,0) AS trailers_arrived,
   COALESCE(a.avg_wait_minutes,0) AS avg_wait_minutes,
   COALESCE(a.detention_fee_usd,0) AS detention_fee_usd,
@@ -125,13 +134,14 @@ SELECT
   CAST(CEIL(COALESCE(lm.load_minutes,0)/60.0 / {TRAILERS_PER_WORKER_PER_HOUR} * 1.6) AS INT) AS recommended_headcount,
   -- fixed shift plan (the status quo that misses the afternoon crunch)
   CAST(CASE
-    WHEN hour(o.hour_ts) BETWEEN 6 AND 13 THEN ROUND(d.door_count*0.55)
-    WHEN hour(o.hour_ts) BETWEEN 14 AND 21 THEN ROUND(d.door_count*0.55)
+    WHEN hour(h.hour_ts) BETWEEN 6 AND 13 THEN ROUND(d.door_count*0.55)
+    WHEN hour(h.hour_ts) BETWEEN 14 AND 21 THEN ROUND(d.door_count*0.55)
     ELSE ROUND(d.door_count*0.25) END AS INT) AS scheduled_headcount
-FROM occ o
-JOIN doors d ON o.terminal = d.terminal
-LEFT JOIN arr a ON o.terminal = a.terminal AND o.hour_ts = a.hour_ts
-LEFT JOIN load_minutes lm ON o.terminal = lm.terminal AND o.hour_ts = lm.hour_ts
+FROM hour_spine h
+JOIN doors d ON h.terminal = d.terminal
+LEFT JOIN occ o ON h.terminal = o.terminal AND h.hour_ts = o.hour_ts
+LEFT JOIN arr a ON h.terminal = a.terminal AND h.hour_ts = a.hour_ts
+LEFT JOIN load_minutes lm ON h.terminal = lm.terminal AND h.hour_ts = lm.hour_ts
 """)
 
 # Add the labor gap + overtime cost columns.

@@ -7,8 +7,8 @@ live in the `fedex-fevm` workspace on **synthetic data only**.
 
 > **Meridian Freight Systems** is a fictional national LTL carrier operating 3 cross-dock
 > terminals (Atlanta 12 doors, Dallas 10, Memphis 14). Trailers arrive in unpredictable
-> waves; a fixed shift plan misses the mid-day loading crunch, driving **$235,799 detention
-> fees + $108,780 avoidable overtime over 31 days (~$4.1M/yr)**. This build gives supervisors
+> waves; a fixed shift plan misses the mid-day loading crunch, driving **$235,940 detention
+> fees + $108,780 modeled overtime over 31 days (~$4.1M/yr)**. This build gives supervisors
 > real-time dock visibility, a staffing-demand forecast, natural-language analytics, and an
 > AI shift-briefing assistant.
 
@@ -53,11 +53,38 @@ captured output of those runs.
 ```
 
 ## Presentation deck & demo script
-- Business deck (outcome-led, KPI-quantified, framed for the VP of Operations and the terminal
-  manager): **[`deck/index.html`](deck/index.html)** — open in a browser, or read the text directly.
+- Google Slides deck with editable charts/tables, architecture, and timed presenter notes:
+  **[Meridian Freight — Dock Operations Intelligence](https://docs.google.com/presentation/d/1aHc3m1N-RoiVbmZy3XPoPNjJ76ItUt88AKvzdas3T2c/edit)**.
+  Twelve main slides and two optional appendices support 19 minutes of prepared material plus six minutes of discussion.
+- Submission-ready PDF export: **[`output/pdf/meridian-freight-dock-operations.pdf`](output/pdf/meridian-freight-dock-operations.pdf)**.
+- The prior HTML deck remains at [`deck/index.html`](deck/index.html). Use the Google Slides version for the current delivery and explicit pilot-economics assumptions.
 - Roleplay demo script for presenting to the business + technical stakeholders (tell-show-tell
-  flow, timed segments, and prepared objection handling for both altitudes):
+  flow, timed segments, and eight evidence-backed objection drills across both altitudes):
   **[`demo/roleplay_demo_script.md`](demo/roleplay_demo_script.md)**.
+
+## Workspace presentation walkthrough
+
+[`notebooks/00_demo_walkthrough.py`](notebooks/00_demo_walkthrough.py) provides a read-only,
+presenter-friendly tour of the demo. It retains observation and forecast dates and reconciles
+detention and modeled overtime against their source formulas. The
+**[published walkthrough](https://fevm-fedex-fevm.cloud.databricks.com/#notebook/3195548178609337)**
+passed serverless validation on October 15, 2026. Reconciliation recovered $141.51
+of arrival-hour detention omitted by the original gold aggregation. Current detention is
+$235,940.19 and combined modeled cost is $344,720.19. See
+[`evidence/2026-10-15-data-reconciliation.md`](evidence/2026-10-15-data-reconciliation.md).
+
+After authenticating `fedex-fevm` and confirming its current catalog, publish the notebooks
+and saved evidence into your isolated workspace folder and run serverless validation:
+
+```bash
+uv run --no-project python scripts/publish_workspace_demo.py \
+  --profile fedex-fevm --catalog <verified_workspace_catalog>
+```
+
+The publisher records the notebook URL and actual run result in
+`evidence/workspace-demo-current.json`. It checks the identity, host, schema, and required
+tables before writing. It does not rebuild the original underlying resources. To remove
+only the new presenter folder, run the same command with `--teardown-launcher`.
 
 ## Run it yourself
 Requires the Databricks CLI authenticated to a workspace (`--profile fedex-fevm`) and a Python venv.
@@ -85,7 +112,7 @@ deploy(spark)     # generates synthetic data into the raw Volume
 - `scripts/` — orchestration (`dbx_run.py`), SQL (`dbsql.py`), Lakebase sync, Genie Q&A, teardown
 - `app/` — FastAPI backend + React frontend + `app.yaml`
 - `evidence/` — **committed text execution evidence for every stage**
-- `deck/` — business presentation (HTML)
+- `deck/` — Google Slides manifest, editable deck specification, and rendered previews
 - `data_samples/` — illustrative synthetic dock-camera frames
 
 ## Teardown

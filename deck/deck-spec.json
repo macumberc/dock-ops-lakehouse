@@ -1,0 +1,86 @@
+[
+  {
+    "id": "meridian_01",
+    "layout": "cover",
+    "title": "Dock staffing before the rush",
+    "minutes": 0.5
+  },
+  {
+    "id": "meridian_02",
+    "layout": "customer",
+    "title": "The loading dock sets the pace",
+    "minutes": 1.5
+  },
+  {
+    "id": "meridian_03",
+    "layout": "mismatch",
+    "title": "The rush arrives. The roster stays flat",
+    "minutes": 1.5
+  },
+  {
+    "id": "meridian_04",
+    "layout": "cost",
+    "title": "The mismatch creates a measurable cost",
+    "minutes": 1
+  },
+  {
+    "id": "meridian_05",
+    "layout": "change",
+    "title": "A different start to the next shift",
+    "minutes": 1
+  },
+  {
+    "id": "meridian_06",
+    "layout": "demo",
+    "title": "One operating view for all 36 doors",
+    "minutes": 4
+  },
+  {
+    "id": "meridian_07",
+    "layout": "decision",
+    "title": "A recommendation the supervisor can act on",
+    "minutes": 3
+  },
+  {
+    "id": "meridian_08",
+    "layout": "architecture",
+    "title": "The data journey behind that decision",
+    "minutes": 1.5
+  },
+  {
+    "id": "meridian_09",
+    "layout": "scorecard",
+    "title": "Prototype evidence and pilot success measures",
+    "minutes": 1
+  },
+  {
+    "id": "meridian_10",
+    "layout": "pilot",
+    "title": "A 30-day pilot with owners and decision gates",
+    "minutes": 1.5
+  },
+  {
+    "id": "meridian_11",
+    "layout": "economics",
+    "title": "The Memphis business case",
+    "minutes": 1
+  },
+  {
+    "id": "meridian_12",
+    "layout": "ask",
+    "title": "Decision today: a Memphis pilot",
+    "minutes": 1.5
+  },
+  {
+    "id": "meridian_13",
+    "layout": "technical",
+    "title": "Appendix: technical evidence and limits",
+    "minutes": 0
+  },
+  {
+    "id": "meridian_14",
+    "layout": "presenter",
+    "title": "Appendix: presenter navigation",
+    "minutes": 0
+  }
+]

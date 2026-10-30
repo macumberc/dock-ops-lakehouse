@@ -1,9 +1,13 @@
-command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+command: ["python", "serve.py"]
 env:
+  - name: DATABRICKS_CATALOG
+    value: "fedex_fevm_catalog"
+  - name: DATABRICKS_SCHEMA
+    value: "dock_ops_chad_macumber"
   - name: DATABRICKS_WAREHOUSE_ID
-    value: "2a0649a9f0fb7773"
-  - name: SERVING_ENDPOINT
-    value: "dock-occupancy-cls"
+    valueFrom: sql-warehouse
+  - name: GENAI_ENDPOINT
+    valueFrom: genai-endpoint
   - name: PGHOST
     value: "ep-square-resonance-d8lt69ul.database.us-east-2.cloud.databricks.com"
   - name: LAKEBASE_ENDPOINT

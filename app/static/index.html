@@ -52,6 +52,9 @@
   button:disabled{opacity:.5;cursor:wait}
   .src{font-size:10.5px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-left:8px}
   .muted{color:var(--mut);font-size:12px}
+  .meta{color:var(--mut);font-size:11px;line-height:1.5;margin-top:8px}
+  .notice{color:#f0c36a;font-size:11px;margin:8px 0 0}
+  .error{color:#ff8b85;font-size:12px}
   .legend{display:flex;gap:14px;font-size:11px;color:var(--mut);margin-bottom:10px}
 </style>
 </head>
@@ -61,15 +64,16 @@
 const {useState,useEffect} = React;
 const f = (n)=> n==null? '–' : Number(n).toLocaleString();
 const usd = (n)=> n==null? '–' : '$'+Number(n).toLocaleString();
+const dt = (v)=> v ? new Date(v).toLocaleString([], {dateStyle:'medium',timeStyle:'short',timeZone:'UTC'})+' UTC' : 'unknown';
 
 function KPIs({d}){
   if(!d) return <div className="muted">Loading KPIs…</div>;
   const t=d.totals||{};
   return <div className="kpis">
-    <div className="card kpi"><div className="label">Detention Fees · 31d</div><div className="val bad">{usd(t.detention_usd)}</div></div>
-    <div className="card kpi"><div className="label">Avoidable Overtime · 31d</div><div className="val warn">{usd(t.overtime_usd)}</div></div>
-    <div className="card kpi"><div className="label">Avg Dock Utilization</div><div className="val blue">{t.avg_util_pct}%</div></div>
-    <div className="card kpi"><div className="label">Peak Dock Utilization</div><div className="val">{t.peak_util_pct}%</div></div>
+    <div className="card kpi"><div className="label">Detention fees · snapshot</div><div className="val bad">{usd(t.detention_usd)}</div><div className="meta">{dt(t.period_start)} – {dt(t.period_end)}</div></div>
+    <div className="card kpi"><div className="label">Modeled overtime · snapshot</div><div className="val warn">{usd(t.overtime_usd)}</div><div className="meta">Synthetic replay</div></div>
+    <div className="card kpi"><div className="label">Avg dock utilization</div><div className="val blue">{t.avg_util_pct}%</div><div className="meta">Source: gold terminal hourly</div></div>
+    <div className="card kpi"><div className="label">Peak dock utilization</div><div className="val">{t.peak_util_pct}%</div><div className="meta">Historical, not live</div></div>
   </div>;
 }
 
@@ -80,7 +84,9 @@ function DockBoard({data}){
   docks.forEach(x=>{(terms[x.terminal]=terms[x.terminal]||[]).push(x)});
   const cls=(d)=> d.telemetry_status==='occupied' ? 'occupied' : 'available';
   return <div className="card">
-    <h2>Live Dock Board <span className="src">source: {data.source}</span></h2>
+    <h2>Historical Dock Snapshot <span className="src">{data.source}</span></h2>
+    <div className="meta">Snapshot as of {dt(data.snapshot_as_of)} · synthetic replay, not live telemetry</div>
+    {data.source_notice && <div className="notice">{data.source_notice}</div>}
     <div className="legend">
       <span><span className="dot" style={{background:'var(--bad)'}}></span>occupied</span>
       <span><span className="dot" style={{background:'var(--warn)'}}></span>cv: loading</span>
@@ -107,10 +113,12 @@ function Staffing({data}){
   if(!data) return <div className="muted">Loading staffing…</div>;
   const rows=data.rows||[];
   return <div className="card">
-    <h2>Next-Shift Understaffing (forecast) <span className="src">source: {data.source}</span></h2>
-    <table><thead><tr><th>Terminal</th><th>Hour</th><th>Need</th><th>Sched</th><th>Gap</th><th>OT risk</th></tr></thead>
+    <h2>Historical Staffing Forecast <span className="src">{data.source}</span></h2>
+    <div className="meta">Selected forecast rows span {dt(data.forecast_start)} – {dt(data.forecast_end)} · not relative to today</div>
+    {data.source_notice && <div className="notice">{data.source_notice}</div>}
+    <table><thead><tr><th>Terminal</th><th>Forecast time</th><th>Need</th><th>Sched</th><th>Gap</th><th>Modeled OT/hr</th></tr></thead>
     <tbody>{rows.map((r,i)=>
-      <tr key={i}><td>{r.terminal}</td><td>{String(r.hour_of_day).padStart(2,'0')}:00</td>
+      <tr key={i}><td>{r.terminal}</td><td>{dt(r.hour_ts)}</td>
       <td>{r.forecast_headcount}</td><td>{r.scheduled_headcount}</td>
       <td className="gap">+{r.labor_gap}</td><td>{usd(r.projected_overtime_cost_usd)}</td></tr>)}</tbody></table>
   </div>;
@@ -131,34 +139,36 @@ function UtilChart({data}){
 }
 
 function Briefing(){
-  const [txt,setTxt]=useState(null); const [busy,setBusy]=useState(false);
+  const [result,setResult]=useState(null); const [busy,setBusy]=useState(false);
   const gen=async()=>{setBusy(true);
-    try{const r=await fetch('/api/briefing',{method:'POST'}); const j=await r.json(); setTxt(j.briefing);}
-    catch(e){setTxt('Error generating briefing: '+e);} setBusy(false);};
+    try{const r=await fetch('/api/briefing',{method:'POST'}); if(!r.ok) throw new Error(`HTTP ${r.status}`); const d=await r.json(); if(typeof d.briefing!=='string') throw new Error('The briefing response did not contain readable text.'); setResult(d);}
+    catch(e){setResult({error:'Error generating briefing: '+e});} setBusy(false);};
   return <div className="card">
-    <h2>AI Shift Briefing <span className="src">Claude Sonnet 5 · grounded</span></h2>
-    {!txt && <p className="muted">Generate a grounded briefing with prioritized staffing actions.</p>}
-    {txt && <div className="brief">{txt}</div>}
+    <h2>AI Snapshot Briefing <span className="src">grounded in displayed sources</span></h2>
+    {!result && <p className="muted">Generate a historical briefing with prioritized staffing actions.</p>}
+    {result?.briefing && <div className="brief">{result.briefing}</div>}
+    {result?.error && <div className="error">{result.error}</div>}
+    {result?.disclaimer && <div className="notice">{result.disclaimer}</div>}
     <div style={{marginTop:12}}><button onClick={gen} disabled={busy}>{busy?'Generating…':'Generate briefing'}</button></div>
   </div>;
 }
 
 function App(){
   const [kpi,setKpi]=useState(null),[docks,setDocks]=useState(null),
-        [staff,setStaff]=useState(null),[util,setUtil]=useState(null);
+        [staff,setStaff]=useState(null),[util,setUtil]=useState(null),[err,setErr]=useState(null);
   useEffect(()=>{
-    fetch('/api/kpis').then(r=>r.json()).then(setKpi);
-    fetch('/api/docks').then(r=>r.json()).then(setDocks);
-    fetch('/api/staffing').then(r=>r.json()).then(setStaff);
-    fetch('/api/utilization').then(r=>r.json()).then(setUtil);
+    const load=(url,setter)=>fetch(url).then(r=>{if(!r.ok) throw new Error(`${url}: HTTP ${r.status}`);return r.json()}).then(setter);
+    Promise.all([load('/api/kpis',setKpi),load('/api/docks',setDocks),load('/api/staffing',setStaff),load('/api/utilization',setUtil)])
+      .catch(e=>setErr(String(e)));
   },[]);
   return <div>
     <header>
       <div className="logo">M</div>
       <div><h1>Meridian Freight — Dock Operations Console</h1>
-      <div className="sub">Loading-dock utilization, staffing & monitoring · Lakehouse-powered</div></div>
+      <div className="sub">Synthetic historical replay · Lakehouse-powered · not current operations</div></div>
     </header>
     <div className="wrap">
+      {err && <div className="card error" style={{marginBottom:16}}>Some data could not be loaded: {err}</div>}
       <KPIs d={kpi}/>
       <div className="grid2"><DockBoard data={docks}/><Staffing data={staff}/></div>
       <div className="grid2"><UtilChart data={util}/><Briefing/></div>

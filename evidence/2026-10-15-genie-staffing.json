@@ -1,0 +1,102 @@
+{
+  "space_id": "01f1a3243b00149fa4876211f8b5c004",
+  "conversation_id": "01f1c8e62bed139791db0687272f704f",
+  "question": "Which dated shifts have the largest staffing gaps in the synthetic forecast? Include the available forecast date range.",
+  "status": "COMPLETED",
+  "sql": "WITH `forecast_range` AS (\n  SELECT\n    MIN(`hour_ts`) AS `forecast_start_ts`,\n    MAX(`hour_ts`) AS `forecast_end_ts`\n  FROM `fedex_fevm_catalog`.`dock_ops_chad_macumber`.`gold_staffing_forecast`\n),\n`ranked_gaps` AS (\n  SELECT\n    `terminal`,\n    `hour_ts`,\n    `forecast_headcount`,\n    `scheduled_headcount`,\n    `labor_gap`\n  FROM `fedex_fevm_catalog`.`dock_ops_chad_macumber`.`gold_staffing_forecast`\n  WHERE `labor_gap` > 0\n    AND `day_of_week` NOT IN (1, 7)\n    AND `hour_ts` IS NOT NULL\n    AND `terminal` IS NOT NULL\n  ORDER BY `labor_gap` DESC, `hour_ts` ASC, `terminal` ASC\n  LIMIT 10\n)\nSELECT\n  r.`forecast_start_ts`,\n  r.`forecast_end_ts`,\n  g.`terminal`,\n  g.`hour_ts`,\n  g.`forecast_headcount`,\n  g.`scheduled_headcount`,\n  g.`labor_gap`\nFROM `forecast_range` r\nCROSS JOIN `ranked_gaps` g\nORDER BY g.`labor_gap` DESC, g.`hour_ts` ASC, g.`terminal` ASC",
+  "answer": [
+    "The available synthetic forecast range runs from **2026-08-30 00:00 UTC** to **2026-09-05 23:00 UTC**. Examples of the dated shifts with the largest staffing gaps include:\n- **MEM \u2014 2026-09-03 10:00 UTC:** **9** headcount gap (17 forecast vs 8 scheduled)\n- **MEM \u2014 2026-09-03 11:00 UTC:** **9** headcount gap (17 forecast vs 8 scheduled)\n- **MEM \u2014 2026-08-31 10:00 UTC:** **8** headcount gap (16 forecast vs 8 scheduled)\n- **ATL \u2014 2026-09-01 11:00 UTC:** **8** headcount gap (15 forecast vs 7 scheduled)\n- **MEM \u2014 2026-09-01 11:00 UTC:** **8** headcount gap (16 forecast vs 8 scheduled)\nAcross the 10 highest-gap forecast shifts shown, **MEM** appears most often and the largest gap is **9**."
+  ],
+  "rows": [
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-03T10:00:00.000Z",
+      "17",
+      "8",
+      "9"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-03T11:00:00.000Z",
+      "17",
+      "8",
+      "9"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-08-31T10:00:00.000Z",
+      "16",
+      "8",
+      "8"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "ATL",
+      "2026-09-01T11:00:00.000Z",
+      "15",
+      "7",
+      "8"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-01T11:00:00.000Z",
+      "16",
+      "8",
+      "8"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-04T11:00:00.000Z",
+      "16",
+      "8",
+      "8"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-08-31T09:00:00.000Z",
+      "15",
+      "8",
+      "7"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "ATL",
+      "2026-09-01T12:00:00.000Z",
+      "14",
+      "7",
+      "7"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-02T11:00:00.000Z",
+      "15",
+      "8",
+      "7"
+    ],
+    [
+      "2026-08-30T00:00:00.000Z",
+      "2026-09-05T23:00:00.000Z",
+      "MEM",
+      "2026-09-04T12:00:00.000Z",
+      "15",
+      "8",
+      "7"
+    ]
+  ]
+}

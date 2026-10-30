@@ -1,0 +1,85 @@
+{
+  "name": "dock-ops-app",
+  "url": "https://dock-ops-app-7474658947307895.aws.databricksapps.com",
+  "app_status": {
+    "message": "App has status: App is running",
+    "state": "RUNNING"
+  },
+  "active_deployment": {
+    "create_time": "2026-10-15T22:16:46Z",
+    "creator": "chad.macumber@databricks.com",
+    "deployment_artifacts": {
+      "source_code_path": "/Workspace/Users/b84c161c-7509-41e9-b779-68fb08f925be/src/01f1c8e61c4911e4891ac89bb9ac936d"
+    },
+    "deployment_id": "01f1c8e61c4911e4891ac89bb9ac936d",
+    "mode": "SNAPSHOT",
+    "source_code_path": "/Workspace/Users/chad.macumber@databricks.com/apps/dock-ops-app",
+    "status": {
+      "message": "App started successfully",
+      "state": "SUCCEEDED"
+    },
+    "update_time": "2026-10-15T22:16:53Z"
+  },
+  "service_principal_client_id": "b84c161c-7509-41e9-b779-68fb08f925be",
+  "resources": [
+    {
+      "name": "sql-warehouse",
+      "sql_warehouse": {
+        "id": "2a0649a9f0fb7773",
+        "permission": "CAN_USE"
+      }
+    },
+    {
+      "name": "genai-endpoint",
+      "serving_endpoint": {
+        "name": "databricks-claude-sonnet-5",
+        "permission": "CAN_QUERY"
+      }
+    }
+  ],
+  "compute_size": "MEDIUM",
+  "observed_browser_api_checks": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/kpis",
+      "status": 200,
+      "detention_usd": 235940,
+      "modeled_overtime_usd": 108780,
+      "average_utilization_pct": 39.9
+    },
+    {
+      "path": "/api/docks",
+      "status": 200,
+      "source": "Lakebase: dock_ops.dock_current_state",
+      "count": 36,
+      "snapshot_as_of": "2026-08-29T03:00:52Z"
+    },
+    {
+      "path": "/api/staffing",
+      "status": 200,
+      "source": "Lakebase: dock_ops.staffing_forecast",
+      "count": 12
+    },
+    {
+      "path": "/api/utilization",
+      "status": 200,
+      "count": 24
+    }
+  ],
+  "ui_validation": {
+    "deployed_briefing_button": "passed",
+    "readable_briefing_text": true,
+    "door_count": 36,
+    "forecast_rows": 12,
+    "kpis": [
+      "$235,940",
+      "$108,780",
+      "39.9%",
+      "94.8%"
+    ],
+    "content_block_regression_tests": 3
+  }
+}

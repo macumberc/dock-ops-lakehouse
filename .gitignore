@@ -18,6 +18,7 @@ app/frontend/build/
 .DS_Store
 *.log
 scratch/
+tmp/
 
 # Secrets — never commit
 .env

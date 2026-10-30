@@ -1,0 +1,99 @@
+{
+  "slide_count": 14,
+  "main_slides": 12,
+  "appendices": 2,
+  "speaker_notes": 14,
+  "transitions": 14,
+  "slides": [
+    {
+      "slide_id": "meridian_01",
+      "note_characters": 966,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_02",
+      "note_characters": 863,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_03",
+      "note_characters": 850,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_04",
+      "note_characters": 872,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_05",
+      "note_characters": 812,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_06",
+      "note_characters": 1231,
+      "transition_cue": true,
+      "image_count": 2
+    },
+    {
+      "slide_id": "meridian_07",
+      "note_characters": 1329,
+      "transition_cue": true,
+      "image_count": 0
+    },
+    {
+      "slide_id": "meridian_08",
+      "note_characters": 1345,
+      "transition_cue": true,
+      "image_count": 5
+    },
+    {
+      "slide_id": "meridian_09",
+      "note_characters": 1117,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_10",
+      "note_characters": 1055,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_11",
+      "note_characters": 1134,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_12",
+      "note_characters": 1313,
+      "transition_cue": true,
+      "image_count": 0
+    },
+    {
+      "slide_id": "meridian_13",
+      "note_characters": 1071,
+      "transition_cue": true,
+      "image_count": 1
+    },
+    {
+      "slide_id": "meridian_14",
+      "note_characters": 1059,
+      "transition_cue": true,
+      "image_count": 1
+    }
+  ],
+  "permissions": [
+    {
+      "type": "user",
+      "role": "owner"
+    }
+  ]
+}
